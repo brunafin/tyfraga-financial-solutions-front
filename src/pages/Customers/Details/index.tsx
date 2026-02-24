@@ -1,4 +1,4 @@
-import { NavLink, redirect, useNavigate, useParams } from "react-router";
+import { NavLink, useNavigate, useParams } from "react-router";
 import Section from "../../../components/ui/Section";
 import { useEffect, useState } from "react";
 import { CustomerService } from "../../../services/customer";
