@@ -3,7 +3,7 @@ import { NavLink } from "react-router"
 
 const Nav = () => {
     return (
-        <nav className="bg-white h-[10vh] shadow absolute w-full -bottom-1 p-3">
+        <nav className="bg-white h-[10vh] shadow w-full fixed bottom-0 p-3">
             <ul className="flex gap-4 justify-around">
                 <li>
                     <NavLink to="/customers" className="text-gray-700 hover:text-gray-900 text-sm flex flex-col items-center">
