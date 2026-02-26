@@ -10,9 +10,9 @@ import NotDevelopment from "./pages/NotDevelopment"
 function App() {
 
   return (
-    <div className="flex flex-col h-dvh overflow-hidden bg-blue-400">
+    <div className="flex flex-col h-dvh overflow-hidden">
       <Header />
-      <div className="flex-1 overflow-y-auto bg-amber-300 pb-20">
+      <div className="flex-1 overflow-y-auto pb-20">
       <Routes>
         <Route index path="/" element={<Dashboard />} />
         <Route path="/customers">
