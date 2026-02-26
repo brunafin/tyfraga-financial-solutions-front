@@ -12,7 +12,7 @@ function App() {
   return (
     <>
       <Header />
-      <div className="h-[79vh] overflow-y-auto">
+      <div className="h-[79vh] overflow-y-hidden">
       <Routes>
         <Route index path="/" element={<Dashboard />} />
         <Route path="/customers">
