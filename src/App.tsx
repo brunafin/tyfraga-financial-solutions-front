@@ -6,6 +6,7 @@ import Customers from "./pages/Customers"
 import CreateCustomer from "./pages/Customers/CreateCustomer"
 import Details from "./pages/Customers/Details"
 import NotDevelopment from "./pages/NotDevelopment"
+import Simulator from "./pages/Simulator"
 
 function App() {
 
@@ -20,7 +21,7 @@ function App() {
           <Route path="create" element={<CreateCustomer />} />
           <Route path=":id" element={<Details />} />
         </Route>
-        <Route path="simulator" element={<NotDevelopment />}/>
+        <Route path="simulator" element={<Simulator />}/>
         <Route path="loans" element={<NotDevelopment />}/>
       </Routes>
       </div>
