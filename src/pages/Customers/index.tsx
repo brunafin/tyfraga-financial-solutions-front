@@ -5,12 +5,15 @@ import Section from "../../components/ui/Section"
 import { useEffect, useState } from "react"
 import { CustomerService } from "../../services/customer"
 import type { ICustomerListItem } from "./types"
+import { useLoader } from "../../contexts/Loader/useLoader"
 
 const Customers = () => {
   const [list, setList] = useState<ICustomerListItem[]>([]);
+  const {showLoader, hideLoader} = useLoader();
 
   useEffect(() => {
     const fetchCustomers = async () => {
+      showLoader();
       try {
         const customers = await CustomerService.getCustomers();
         console.log('customers', customers);
@@ -18,6 +21,7 @@ const Customers = () => {
       } catch (error) {
         console.error('Erro ao buscar clientes:', error);
       }
+      hideLoader();
     };
 
     fetchCustomers();

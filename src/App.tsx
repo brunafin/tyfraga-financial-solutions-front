@@ -7,26 +7,29 @@ import CreateCustomer from "./pages/Customers/CreateCustomer"
 import Details from "./pages/Customers/Details"
 import NotDevelopment from "./pages/NotDevelopment"
 import Simulator from "./pages/Simulator"
+import { LoaderProvider } from "./contexts/Loader/LoaderProvider"
 
 function App() {
 
   return (
-    <div className="flex flex-col h-dvh overflow-hidden">
-      <Header />
-      <div className="flex-1 overflow-y-auto pb-20">
-      <Routes>
-        <Route index path="/" element={<Dashboard />} />
-        <Route path="/customers">
-          <Route index element={<Customers />} />
-          <Route path="create" element={<CreateCustomer />} />
-          <Route path=":id" element={<Details />} />
-        </Route>
-        <Route path="simulator" element={<Simulator />}/>
-        <Route path="loans" element={<NotDevelopment />}/>
-      </Routes>
+    <LoaderProvider>
+      <div className="flex flex-col h-dvh overflow-hidden">
+        <Header />
+        <div className="flex-1 overflow-y-auto pb-20">
+          <Routes>
+            <Route index path="/" element={<Dashboard />} />
+            <Route path="/customers">
+              <Route index element={<Customers />} />
+              <Route path="create" element={<CreateCustomer />} />
+              <Route path=":id" element={<Details />} />
+            </Route>
+            <Route path="simulator" element={<Simulator />} />
+            <Route path="loans" element={<NotDevelopment />} />
+          </Routes>
+        </div>
+        <Nav />
       </div>
-      <Nav />
-    </div>
+    </LoaderProvider>
   )
 }
 
