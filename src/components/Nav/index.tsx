@@ -1,4 +1,4 @@
-import { BanknoteArrowUp, Calculator, ChartLine, Cog, HandCoins, User } from "lucide-react"
+import { BanknoteArrowUp, Calculator, Cog, HandCoins, User } from "lucide-react"
 import { NavLink, useLocation } from "react-router"
 
 const Nav = () => {

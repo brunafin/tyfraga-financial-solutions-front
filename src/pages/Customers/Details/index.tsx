@@ -8,11 +8,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import Button from "../../../components/ui/Button";
 import InputText from "../../../components/ui/Input/InputText";
 import InputPhone from "../../../components/ui/Input/InputPhone";
-import Accordion from "../../../components/ui/Accordion";
 import Table from "../../../components/ui/Table";
 import IconButton from "../../../components/ui/ButtonIcon";
 import { Eye } from "lucide-react";
-import ButtonIconNavLink from "../../../components/ui/ButtonIconNavLink";
 import ButtonNavLink from "../../../components/ui/ButtonNavLink";
 import TaxBadge from "../../../components/ui/TaxBadge";
 
@@ -29,7 +27,7 @@ type FormData = z.infer<typeof schema>;
 const Details = () => {
     const { id } = useParams();
     const navigate = useNavigate();
-    const [isEdit, setIsEdit] = useState(false);
+    const [, setIsEdit] = useState(false);
     const {
         register,
         control,
@@ -213,7 +211,7 @@ const Details = () => {
                         { header: "Total de parcelas", accessor: "installments_total" },
                         { header: "Parcelas restantes", accessor: "installments_missing" },
                         {
-                            header: "Ações", accessor: "name", render: (_, row) => (
+                            header: "Ações", accessor: "name", render: (_) => (
                                 <div className="flex justify-end gap-2">
                                     <IconButton
                                         icon={<Eye size={16} />}

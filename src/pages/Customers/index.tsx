@@ -6,8 +6,6 @@ import type { ICustomerListItem } from "./types"
 import { useLoader } from "../../contexts/Loader/useLoader"
 import ButtonLink from "../../components/ui/ButtonNavLink"
 import Table from "../../components/ui/Table"
-import { Eye } from "lucide-react"
-import ButtonIconNavLink from "../../components/ui/ButtonIconNavLink"
 
 const Customers = () => {
   const [list, setList] = useState<ICustomerListItem[]>([]);
@@ -49,16 +47,16 @@ const Customers = () => {
           {
             header: "Ações",
             accessor: "uuid",
-            render: (_, row) => (
-              <div className="flex justify-end gap-2">
-                <ButtonIconNavLink
-                  to={`/customers/${row.uuid}`}
-                  icon={<Eye size={16} />}
-                  label="Ver detalhes do cliente"
-                />
+            // render: (_, row) => (
+            //   <div className="flex justify-end gap-2">
+            //     <ButtonIconNavLink
+            //       to={`/customers/${row.uuid}`}
+            //       icon={<Eye size={16} />}
+            //       label="Ver detalhes do cliente"
+            //     />
 
-              </div>
-            ),
+            //   </div>
+            // ),
           }
         ]}
         data={list}

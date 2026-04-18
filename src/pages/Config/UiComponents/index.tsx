@@ -233,7 +233,7 @@ const UiComponents = () => {
                         {
                             header: "Ações",
                             accessor: "id",
-                            render: (_, row) => (
+                            render: (_) => (
                                 <div className="flex justify-end gap-2">
                                     <IconButton
                                         icon={<Pencil size={16} />}
@@ -286,7 +286,7 @@ const UiComponents = () => {
                                 {
                                     header: "Ações",
                                     accessor: "id",
-                                    render: (_, row) => (
+                                    render: (_,) => (
                                         <div className="flex justify-end gap-2">
                                             <IconButton
                                                 icon={<Pencil size={16} />}
