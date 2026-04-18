@@ -1,15 +1,17 @@
-import { PlusIcon } from "@heroicons/react/16/solid"
-import CustomerCard from "./CustomerCard"
-import { NavLink, Outlet } from "react-router"
+import { Outlet } from "react-router"
 import Section from "../../components/ui/Section"
 import { useEffect, useState } from "react"
 import { CustomerService } from "../../services/customer"
 import type { ICustomerListItem } from "./types"
 import { useLoader } from "../../contexts/Loader/useLoader"
+import ButtonLink from "../../components/ui/ButtonNavLink"
+import Table from "../../components/ui/Table"
+import { Eye } from "lucide-react"
+import ButtonIconNavLink from "../../components/ui/ButtonIconNavLink"
 
 const Customers = () => {
   const [list, setList] = useState<ICustomerListItem[]>([]);
-  const {showLoader, hideLoader} = useLoader();
+  const { showLoader, hideLoader } = useLoader();
 
   useEffect(() => {
     const fetchCustomers = async () => {
@@ -25,24 +27,43 @@ const Customers = () => {
     };
 
     fetchCustomers();
-  },[])
+  }, [])
 
   return (
-    <Section title="Clientes">
-      <header className="flex items-center justify-between">
-        <NavLink to="/customers/create" className="w-full font-bold text-sm bg-red-600 text-white flex items-center justify-center gap-2 p-2 rounded-md">
-          <PlusIcon className="w-6" /> Novo cliente
-        </NavLink>
-      </header>
-      <ul className="flex flex-col gap-3 pt-8">
-        {list.map((customer) => (
-          <CustomerCard
-            uuid={customer.uuid}
-            name={customer.name}
-            loansCount={0}
-          />
-        ))}
-      </ul>
+    <Section
+      title="Clientes"
+      action={
+        <ButtonLink to="/customers/create">
+          Novo cliente
+        </ButtonLink>
+      }
+    >
+      <Table
+        counterInfo={`${list.length} cliente${list.length !== 1 ? 's' : ''} encontrado${list.length !== 1 ? 's' : ''}`}
+        columns={[
+          { header: 'ID', accessor: 'uuid' },
+          { header: 'Nome', accessor: 'name' },
+          { header: 'Telefone', accessor: 'phone' },
+          { header: 'Empréstimo', accessor: 'loansCount' },
+          { header: 'Status', accessor: 'status' },
+          {
+            header: "Ações",
+            accessor: "uuid",
+            render: (_, row) => (
+              <div className="flex justify-end gap-2">
+                <ButtonIconNavLink
+                  to={`/customers/${row.uuid}`}
+                  icon={<Eye size={16} />}
+                  label="Ver detalhes do cliente"
+                />
+
+              </div>
+            ),
+          }
+        ]}
+        data={list}
+
+      />
       <Outlet />
     </Section>
   )

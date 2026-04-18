@@ -8,14 +8,18 @@ import Details from "./pages/Customers/Details"
 import NotDevelopment from "./pages/NotDevelopment"
 import Simulator from "./pages/Simulator"
 import { LoaderProvider } from "./contexts/Loader/LoaderProvider"
+import UiComponents from "./pages/Config/UiComponents"
+import Config from "./pages/Config"
 
 function App() {
 
   return (
     <LoaderProvider>
-      <div className="flex flex-col h-dvh overflow-hidden">
+      <div className="max-h-screen overflow-y-auto">
         <Header />
-        <div className="flex-1 overflow-y-auto pb-20">
+        <div>
+        <Nav />
+        <div>
           <Routes>
             <Route index path="/" element={<Dashboard />} />
             <Route path="/customers">
@@ -25,9 +29,12 @@ function App() {
             </Route>
             <Route path="simulator" element={<Simulator />} />
             <Route path="loans" element={<NotDevelopment />} />
+            <Route path="payments" element={<NotDevelopment />} />
+            <Route path="config" element={<Config />} />
+            <Route path="config/ui" element={<UiComponents />} />
           </Routes>
         </div>
-        <Nav />
+        </div>
       </div>
     </LoaderProvider>
   )

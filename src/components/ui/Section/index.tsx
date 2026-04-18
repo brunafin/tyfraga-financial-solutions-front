@@ -1,10 +1,27 @@
-const Section = ({ title, children }: { title: string, children: React.ReactNode }) => {
+import Title from "../Title";
+
+type SectionProps = {
+  title: string;
+  children: React.ReactNode;
+  action?: React.ReactNode;
+};
+
+const Section = ({ title, children, action }: SectionProps) => {
   return (
     <section className="p-4">
-      <h2 className="text-xl font-bold text-gray-700 mb-4">{title}</h2>
+      <div className="flex items-center justify-between mb-4">
+        <Title>{title}</Title>
+
+        {action && (
+          <div>
+            {action}
+          </div>
+        )}
+      </div>
+
       {children}
     </section>
-  )
-}
+  );
+};
 
-export default Section
+export default Section;

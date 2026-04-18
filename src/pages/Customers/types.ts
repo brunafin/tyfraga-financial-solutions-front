@@ -1,10 +1,10 @@
-type TrustLevel = 'low' | 'medium' | 'high';
+export type TrustLevel = 'low' | 'medium' | 'high';
+export type TrustLevelUi = 'baixo' | 'médio' | 'alto';
 
 export interface ICustomerListItem {
     uuid: string;
     name: string;
     phone: string;
-    trust_level: TrustLevel
-    bond: string;
-    key_pix: string;
+    loansCount: number;
+    status: boolean;
 }

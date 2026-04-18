@@ -1,25 +1,39 @@
-import { CalculatorIcon, CreditCardIcon, UsersIcon } from "@heroicons/react/24/outline"
-import { NavLink } from "react-router"
+import { BanknoteArrowUp, Calculator, ChartLine, Cog, HandCoins, User } from "lucide-react"
+import { NavLink, useLocation } from "react-router"
 
 const Nav = () => {
+    const routeLocation = useLocation().pathname;
     return (
-        <nav className="bg-white h-[10vh] shadow w-full fixed bottom-0 p-3">
-            <ul className="flex gap-4 justify-around">
+        <nav className="bg-primary sm:absolute sm:w-full sm:bottom-5 md:bg-primary md:w-20 md:h-full p-3">
+            <ul className="flex md:flex-col gap-6 justify-around">
+                {/* <li>
+                    <NavLink to="/" className={`hover:bg-secondary hover:rounded-md p-3 flex justify-center ${routeLocation === '/' ? 'bg-secondary rounded-md' : ''}`}>
+                        <ChartLine className="text-white w-6" />
+                    </NavLink>
+                </li> */}
                 <li>
-                    <NavLink to="/customers" className="text-gray-700 hover:text-gray-900 text-sm flex flex-col items-center">
-                        <UsersIcon className="text-gray-500 w-6" /> Clientes
+                    <NavLink to="/simulator" className={`hover:bg-secondary hover:rounded-md p-3 flex justify-center ${routeLocation === '/simulator' ? 'bg-secondary rounded-md' : ''}`}>
+                        <Calculator className="text-white w-6" />
                     </NavLink>
                 </li>
-                <div className="border-2 border-gray-200"/>
                 <li>
-                    <NavLink to="/simulator" className="text-gray-700 hover:text-gray-900 text-sm flex flex-col items-center">
-                        <CalculatorIcon className="text-gray-500 w-6" /> Simulador
+                    <NavLink to="/loans" className={`hover:bg-secondary hover:rounded-md p-3 flex justify-center ${routeLocation === '/loans' ? 'bg-secondary rounded-md' : ''}`}>
+                        <BanknoteArrowUp className="text-white w-6" />
                     </NavLink>
                 </li>
-                <div className="border-2 border-gray-200"/>
                 <li>
-                    <NavLink to="/loans" className="text-gray-700 hover:text-gray-900 text-sm flex flex-col items-center">
-                        <CreditCardIcon className="text-gray-500 w-6" /> Empréstimos
+                    <NavLink to="/payments" className={`hover:bg-secondary hover:rounded-md p-3 flex justify-center ${routeLocation === '/payments' ? 'bg-secondary rounded-md' : ''}`}>
+                        <HandCoins className="text-white w-6" />
+                    </NavLink>
+                </li>
+                <li>
+                    <NavLink to="/customers" className={`hover:bg-secondary hover:rounded-md p-3 flex justify-center ${routeLocation === '/customers' ? 'bg-secondary rounded-md' : ''}`}>
+                        <User className="text-white w-6" />
+                    </NavLink>
+                </li>
+                <li>
+                    <NavLink to="/config" className={`hover:bg-secondary hover:rounded-md p-3 flex justify-center ${routeLocation === '/config' ? 'bg-secondary rounded-md' : ''}`}>
+                        <Cog className="text-white w-6" />
                     </NavLink>
                 </li>
             </ul>

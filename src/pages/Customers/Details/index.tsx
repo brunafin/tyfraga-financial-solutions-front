@@ -2,12 +2,19 @@ import { NavLink, useNavigate, useParams } from "react-router";
 import Section from "../../../components/ui/Section";
 import { useEffect, useState } from "react";
 import { CustomerService } from "../../../services/customer";
-import type { ICustomerListItem } from "../types";
 import z from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Button from "../../../components/ui/Button";
-import { PencilIcon } from "@heroicons/react/24/outline";
+import InputText from "../../../components/ui/Input/InputText";
+import InputPhone from "../../../components/ui/Input/InputPhone";
+import Accordion from "../../../components/ui/Accordion";
+import Table from "../../../components/ui/Table";
+import IconButton from "../../../components/ui/ButtonIcon";
+import { Eye } from "lucide-react";
+import ButtonIconNavLink from "../../../components/ui/ButtonIconNavLink";
+import ButtonNavLink from "../../../components/ui/ButtonNavLink";
+import TaxBadge from "../../../components/ui/TaxBadge";
 
 const schema = z.object({
     name: z.string().min(1, "O nome é obrigatório"),
@@ -15,9 +22,6 @@ const schema = z.object({
         .string()
         .min(1, "O telefone é obrigatório")
         .regex(/^\d{10,11}$/, "O telefone deve conter 10 ou 11 dígitos"),
-    key_pix: z.string().min(1, "A chave Pix é obrigatória"),
-    bond: z.string().min(1, "O vínculo é obrigatório"),
-    trust_level: z.enum(["baixo", "médio", "alto", "não sei"], 'O nível de confiança é obrigatório'),
 });
 
 type FormData = z.infer<typeof schema>;
@@ -26,9 +30,9 @@ const Details = () => {
     const { id } = useParams();
     const navigate = useNavigate();
     const [isEdit, setIsEdit] = useState(false);
-    const [customer, setCustomer] = useState<ICustomerListItem | null>(null);
     const {
         register,
+        control,
         reset,
         handleSubmit,
         formState: { errors },
@@ -53,9 +57,6 @@ const Details = () => {
             await CustomerService.updateCustomer(id!, {
                 name: data.name,
                 phone: data.phone,
-                key_pix: data.key_pix,
-                bond: data.bond,
-                trust_level: data.trust_level,
             });
             alert("Cliente atualizado com sucesso!");
             fetchCustomerById();
@@ -69,13 +70,9 @@ const Details = () => {
     const fetchCustomerById = async () => {
         try {
             const customer = await CustomerService.getCustomerById(id!);
-            setCustomer(customer);
             reset({
                 name: customer.name,
                 phone: customer.phone,
-                key_pix: customer.key_pix,
-                bond: customer.bond,
-                trust_level: customer.trust_level,
             });
         } catch (error) {
             console.error('Erro ao buscar cliente:', error);
@@ -89,110 +86,148 @@ const Details = () => {
     }, [id])
 
     return (
-        <Section title="Detalhes do Cliente">
-            <div className="flex items-center">
-                <Button size="full" variant={isEdit ? 'outline' : 'primary'} onClick={() => setIsEdit((prev) => !prev)}>
-                    <PencilIcon className="w-6" /> {isEdit ? "Cancelar edição" : "Editar"}
-                </Button>
-            </div>
-            <div className="py-4">
-                <p className="text-lg"><span className="font-bold me-2">Nome:</span>{customer?.name}</p>
-                <p className="text-lg"><span className="font-bold me-2">Telefone:</span>{customer?.phone}</p>
-                <p className="text-lg"><span className="font-bold me-2">Chave pix: </span>{customer?.key_pix}</p>
-                <p className="text-lg"><span className="font-bold me-2">Vínculo: </span>{customer?.bond}</p>
-                <p className="text-lg"><span className="font-bold me-2">Nível de confiança: </span>{customer?.trust_level}</p>
-            </div>
-            {isEdit && (
-                <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-3 my-4">
+        <Section
+            title="Detalhes do Cliente"
+            action={
+                <Button variant="destructive" onClick={() => handleDelete()}>Excluir cliente</Button>
 
-                    {/* Nome */}
-                    <label className="flex flex-col gap-1">
-                        Nome
-                        <input
-                            {...register("name")}
-                            type="text"
-                            className="border border-gray-300 rounded-md p-2"
-                        />
-                        {errors.name && (
-                            <span className="text-red-500 text-sm">
-                                {errors.name.message}
-                            </span>
-                        )}
-                    </label>
+            }
+        >
+            <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-3 my-4">
+                <div className="w-full md:w-1/2">
+                    <InputText
+                        label="Nome"
+                        placeholder="Digite o nome do cliente"
+                        name="name"
+                        register={register}
+                        errors={errors}
+                    />
+                </div>
 
-                    {/* Telefone */}
-                    <label className="flex flex-col gap-1">
-                        Telefone
-                        <input
-                            {...register("phone")}
-                            type="text"
-                            className="border border-gray-300 rounded-md p-2"
-                        />
-                        {errors.phone && (
-                            <span className="text-red-500 text-sm">
-                                {errors.phone.message}
-                            </span>
-                        )}
-                    </label>
+                {/* Telefone */}
+                <div className="w-full md:w-1/2">
+                    <InputPhone
+                        label="Telefone"
+                        name="phone"
+                        control={control}
+                        errors={errors}
+                    />
+                </div>
 
-                    {/* Chave Pix */}
-                    <label className="flex flex-col gap-1">
-                        Chave Pix
-                        <input
-                            {...register("key_pix")}
-                            type="text"
-                            className="border border-gray-300 rounded-md p-2"
-                        />
-                        {errors.key_pix && (
-                            <span className="text-red-500 text-sm">
-                                {errors.key_pix.message}
-                            </span>
-                        )}
-                    </label>
-
-                    {/* Vínculo */}
-                    <label className="flex flex-col gap-1">
-                        Vínculo
-                        <input
-                            {...register("bond")}
-                            type="text"
-                            className="border border-gray-300 rounded-md p-2"
-                        />
-                        {errors.bond && (
-                            <span className="text-red-500 text-sm">
-                                {errors.bond.message}
-                            </span>
-                        )}
-                    </label>
-
-                    {/* Nível de confiança */}
-                    <label className="flex flex-col gap-1 mb-4">
-                        Nível de Confiança
-                        <select
-                            {...register("trust_level")}
-                            className="border border-gray-300 rounded-md p-2"
-                        >
-                            <option value="">Selecione</option>
-                            <option value="não sei">Não sei</option>
-                            <option value="baixo">Baixo</option>
-                            <option value="médio">Médio</option>
-                            <option value="alto">Alto</option>
-                        </select>
-                        {errors.trust_level && (
-                            <span className="text-red-500 text-sm">
-                                {errors.trust_level.message}
-                            </span>
-                        )}
-                    </label>
-
-                    <Button size="full" type="submit">Salvar</Button>
-
+                <div className="flex justify-end gap-4 fixed bottom-0 left-0 w-full px-8 py-4 bg-white">
                     <NavLink to="/customers">
-                        <Button size="full" variant="outline">Cancelar</Button>
+                        <Button variant="outline_primary">Cancelar</Button>
                     </NavLink>
-                </form>
-            )}
-            <Button size="full" variant="outline_primary" onClick={() => handleDelete()}>Excluir cliente</Button>
+                    <Button type="submit">Salvar cliente</Button>
+                </div>
+            </form>
+
+            <h2 className="mt-12 pt-3 text-primary
+             text-2xl border-t border-primary/20">Histórico de pagamentos</h2>
+            {/* <div className="mt-8">
+                <Accordion
+                    header={
+                        <div className="flex justify-between items-center w-full">
+                            <div className="flex gap-6">
+                                <span>24/04/2026</span>
+                                <span className="font-medium">R$ 1.000,00</span>
+                            </div>
+
+                            <span className="text-sm text-gray-500">Em dia</span>
+                        </div>
+                    }
+                >
+                    <div className="flex flex-col gap-3">
+                        <div className="flex justify-end">
+                            <ButtonNavLink to="/loans/1" variant="link_primary">
+                                Ver detalhes do empréstimo
+                            </ButtonNavLink>
+                        </div>
+                        <div className=" flex flex-col bg-secondary/20 rounded-sm p-2">
+                            <p>Taxa média mensal: 20%</p>
+                            <p>Tempo:26 dias</p>
+                            <p>Observação: cobrar sempre na segunda-feira</p>
+                        </div>
+                        <Table
+                            columns={[
+                                { header: "Parcela", accessor: "name" },
+                                { header: "Valor", accessor: "price" },
+                                { header: "Data vencimento", accessor: "dueDate" },
+                                { header: "Data pagamento", accessor: "paymentDate" },
+                                { header: "Status", accessor: "status" },
+                            ]}
+                            data={[
+                                { id: 1, name: "1", price: "600,00", dueDate: "01/05/2026", paymentDate: "30/04/2026", status: "Pago" },
+                                { id: 2, name: "2", price: "600,00", dueDate: "01/06/2026", paymentDate: "30/05/2026", status: "Pendente" },
+                                { id: 2, name: "2", price: "600,00", dueDate: "01/06/2026", paymentDate: "30/05/2026", status: "Pendente" },
+                                { id: 2, name: "2", price: "600,00", dueDate: "01/06/2026", paymentDate: "30/05/2026", status: "Pendente" },
+                                { id: 2, name: "2", price: "600,00", dueDate: "01/06/2026", paymentDate: "30/05/2026", status: "Pendente" },
+                                { id: 2, name: "2", price: "600,00", dueDate: "01/06/2026", paymentDate: "30/05/2026", status: "Pendente" },
+                                { id: 2, name: "2", price: "600,00", dueDate: "01/06/2026", paymentDate: "30/05/2026", status: "Pendente" },
+                            ]}
+                        />
+                    </div>
+                </Accordion>
+            </div> */}
+            <div className="mt-8">
+                <div className="flex flex-col gap-3">
+                    {/* <div className=" flex flex-col bg-secondary/20 rounded-sm p-2">
+                            <p>Taxa média mensal: 20%</p>
+                            <p>Tempo:26 dias</p>
+                            <p>Observação: cobrar sempre na segunda-feira</p>
+                        </div> */}
+
+                    {/* Aqui entra sua tabela */}
+                    <Table
+                        columns={[
+                            { header: "Parcela", accessor: "name" },
+                            { header: "Valor", accessor: "price" },
+                            { header: "Data vencimento", accessor: "dueDate" },
+                            { header: "Data pagamento", accessor: "paymentDate" },
+                        ]}
+                        data={[
+                            { id: 1, name: "1", price: "600,00", dueDate: "01/05/2026", paymentDate: "30/04/2026" },
+                            { id: 1, name: "1", price: "600,00", dueDate: "01/05/2026", paymentDate: "30/04/2026" },
+                            { id: 1, name: "1", price: "600,00", dueDate: "01/05/2026", paymentDate: "30/04/2026" },
+                            { id: 1, name: "1", price: "600,00", dueDate: "01/05/2026", paymentDate: "30/04/2026" },
+                            { id: 1, name: "1", price: "600,00", dueDate: "01/05/2026", paymentDate: "30/04/2026" },
+                        ]}
+                    />
+                </div>
+            </div>
+            <section className="border-t border-primary/20 mt-12">
+                <div className="flex justify-between items-end mb-8">
+                    <div className="flex items-end gap-2">
+                    <h2 className="pt-3 text-primary text-2xl">Empréstimos</h2>
+                    <TaxBadge tax={20} taxByCustomer/>
+                    </div>
+                    <ButtonNavLink to="/loans" variant="outline_primary" className="mt-4">
+                        Ver todos os empréstimos
+                    </ButtonNavLink>
+                </div>
+                <Table
+                    columns={[
+                        { header: "Número", accessor: "name" },
+                        { header: "Valor emprestado", accessor: "amount_borrowed" },
+                        { header: "Valor cobrado", accessor: "amount_charged" },
+                        { header: "Total de parcelas", accessor: "installments_total" },
+                        { header: "Parcelas restantes", accessor: "installments_missing" },
+                        {
+                            header: "Ações", accessor: "name", render: (_, row) => (
+                                <div className="flex justify-end gap-2">
+                                    <IconButton
+                                        icon={<Eye size={16} />}
+                                        label="Detalhes do empréstimo"
+                                    />
+                                </div>
+                            ),
+                        },
+                    ]}
+                    data={[
+                        { id: 1, name: "1", amount_borrowed: "600,00", amount_charged: "720,00", installments_total: "6", installments_missing: "4" },
+                    ]}
+                />
+            </section>
         </Section>
     )
 }
