@@ -235,7 +235,7 @@ const Simulator = () => {
                     <div>
                         {formValues.installments > 0 &&
                             Array.from({ length: formValues.installments }).map((_, index) => (
-                                <div key={index} className="bg-yellow-400">
+                                <div key={index} className="bg-green-400 flex w-full mb-4">
                                     <InputDate
                                         label={`Data da parcela ${index + 1}`}
                                         name={`payment_dates.${index}`}
