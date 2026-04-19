@@ -4,7 +4,7 @@ import { NavLink, useLocation } from "react-router"
 const Nav = () => {
     const routeLocation = useLocation().pathname;
     return (
-        <nav className="bg-primary sm:fixed sm:w-full sm:bottom-0 md:bg-primary md:w-20 md:h-full p-3">
+        <nav className="bg-primary fixed w-full bottom-0 md:bg-primary md:w-20 md:h-full p-3">
             <ul className="flex md:flex-col gap-6 justify-around">
                 {/* <li>
                     <NavLink to="/" className={`hover:bg-secondary hover:rounded-md p-3 flex justify-center ${routeLocation === '/' ? 'bg-secondary rounded-md' : ''}`}>
