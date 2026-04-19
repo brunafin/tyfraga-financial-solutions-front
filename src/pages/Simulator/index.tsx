@@ -232,7 +232,7 @@ const Simulator = () => {
                     <div>
                         <h2 className="text-lg text-primary mt-4 border-b border-secondary/50">Vencimentos</h2>
                     </div>
-                    <div className="w-full">
+                    <div className="w-full bg-red-500">
                         {formValues.installments > 0 &&
                             Array.from({ length: formValues.installments }).map((_, index) => (
                                 <div key={index} className="mb-4">
