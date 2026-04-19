@@ -246,7 +246,7 @@ const Simulator = () => {
                             ))}
                     </div>
                 </div>
-                <div className="mt-8">
+                <div className="my-8">
                     <Button size="full" type="button" onClick={() => handleCalculationLoan()}>
                         Simular
                     </Button>
