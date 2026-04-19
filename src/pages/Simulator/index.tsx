@@ -232,10 +232,10 @@ const Simulator = () => {
                     <div>
                         <h2 className="text-lg text-primary mt-4 border-b border-secondary/50">Vencimentos</h2>
                     </div>
-                    <div className="flex flex-col gap-4 bg-blue-500">
+                    <div>
                         {formValues.installments > 0 &&
                             Array.from({ length: formValues.installments }).map((_, index) => (
-                                <div key={index}>
+                                <div key={index} className="bg-yellow-400">
                                     <InputDate
                                         label={`Data da parcela ${index + 1}`}
                                         name={`payment_dates.${index}`}
