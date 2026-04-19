@@ -1,7 +1,7 @@
 import { Route, Routes } from "react-router"
 import Header from "./components/Header"
 import Nav from "./components/Nav"
-import Dashboard from "./pages/Dashboard"
+// import Dashboard from "./pages/Dashboard"
 import Customers from "./pages/Customers"
 import CreateCustomer from "./pages/Customers/CreateCustomer"
 import Details from "./pages/Customers/Details"
