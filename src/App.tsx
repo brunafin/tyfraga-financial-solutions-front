@@ -15,7 +15,7 @@ function App() {
 
   return (
     <LoaderProvider>
-      <div className="max-h-screen overflow-y-auto">
+      <div className="max-h-dvh overflow-y-auto">
         <Header />
         <div>
         <Nav />
