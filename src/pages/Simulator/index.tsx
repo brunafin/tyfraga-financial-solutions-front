@@ -53,9 +53,9 @@ const Simulator = () => {
             customer_id: "",
             initial_date: new Date().toISOString().split("T")[0],
             value: null,
-            installments: 1,
+            installments: 2,
             installment_value: 0,
-            tax: 10,
+            tax: 20,
             observation: "",
             payment_dates: [],
             type: "tax",
@@ -175,7 +175,7 @@ const Simulator = () => {
                             <TaxBadge tax={20} taxByCustomer={!!formValues.customer_id} />
                         </div>
                     </div>
-                    <div className="">
+                    <div>
                         <InputDate
                             label="Data empréstimo"
                             name="initial_date"
@@ -183,7 +183,7 @@ const Simulator = () => {
                             errors={errors}
                         />
                     </div>
-                    <div className="">
+                    <div>
                         <InputCurrency
                             control={control}
                             label="Valor do empréstimo"
@@ -203,7 +203,7 @@ const Simulator = () => {
                             ]}
                         />
                     </div>
-                    <div className="">
+                    <div>
                         <InputPercentage
                             control={control}
                             label="Taxa de juros (%)"
@@ -211,7 +211,7 @@ const Simulator = () => {
                             errors={errors}
                         />
                     </div>
-                    <div className="">
+                    <div>
                         <InputQuantity
                             control={control}
                             label="Quantidade de parcelas"
@@ -220,7 +220,7 @@ const Simulator = () => {
                         />
                     </div>
                     {/* {formValues.type === "installment" && ( */}
-                    <div className="">
+                    <div>
                         <InputCurrency
                             control={control}
                             label="Valor da parcela"
@@ -229,7 +229,7 @@ const Simulator = () => {
                         />
                     </div>
                     {/* )} */}
-                    <div className="">
+                    <div>
                         <h2 className="text-lg text-primary mt-4 border-b border-secondary/50">Vencimentos</h2>
                     </div>
                     <div className="w-full">
@@ -252,21 +252,23 @@ const Simulator = () => {
                     </Button>
                 </div>
             </form>
-            <div className="mt-8 mb-16 py-3 text-xl">
-                <h2 className="text-xl mb-4 ">Resultado da simulação:</h2>
-                {calculationResult ? (
-                    <div className="col-span-6">
-                        <Table
-                            columns={[
-                                { header: "Parcela", accessor: "installment" },
-                                { header: "Vencimento", accessor: "due_date" },
-                                { header: "Valor", accessor: "installmentValue" },
-                            ]}
-                            data={tableData}
-                        />
-                    </div>
-                ) : <p>Nenhum resultado</p>}
-            </div>
+            {calculationResult && (
+                <div className="mt-8 mb-16 py-3 text-xl">
+                    <h2 className="text-xl mb-4 ">Resultado da simulação:</h2>
+                    {calculationResult ? (
+                        <div>
+                            <Table
+                                columns={[
+                                    { header: "Parcela", accessor: "installment" },
+                                    { header: "Vencimento", accessor: "due_date" },
+                                    { header: "Valor", accessor: "installmentValue" },
+                                ]}
+                                data={tableData}
+                            />
+                        </div>
+                    ) : <p>Nenhum resultado</p>}
+                </div>
+            )}
         </Section >
     );
 };
