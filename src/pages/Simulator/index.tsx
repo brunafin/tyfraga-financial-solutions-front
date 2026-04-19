@@ -252,7 +252,6 @@ const Simulator = () => {
                     </Button>
                 </div>
             </form>
-            {calculationResult && (
                 <div className="mt-8 mb-16 py-3 text-xl">
                     <h2 className="text-xl mb-4 ">Resultado da simulação:</h2>
                     {calculationResult ? (
@@ -268,7 +267,6 @@ const Simulator = () => {
                         </div>
                     ) : <p>Nenhum resultado</p>}
                 </div>
-            )}
         </Section >
     );
 };
