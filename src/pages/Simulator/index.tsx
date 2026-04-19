@@ -156,8 +156,8 @@ const Simulator = () => {
     return (
         <Section title="Simulador">
             <form onSubmit={handleSubmit(onSubmit)}>
-                <div className="grid grid-cols-12 gap-4">
-                    <div className="col-span-12 flex items-end gap-3">
+                <div className="flex flex-col gap-5">
+                    <div className="flex items-end gap-2">
                         <div className="flex-1">
                             <InputSelect
                                 control={control}
@@ -175,7 +175,7 @@ const Simulator = () => {
                             <TaxBadge tax={20} taxByCustomer={!!formValues.customer_id} />
                         </div>
                     </div>
-                    <div className="sm:col-span-12 md:col-span-3">
+                    <div className="">
                         <InputDate
                             label="Data empréstimo"
                             name="initial_date"
@@ -183,7 +183,7 @@ const Simulator = () => {
                             errors={errors}
                         />
                     </div>
-                    <div className="sm:col-span-12 md:col-span-3">
+                    <div className="">
                         <InputCurrency
                             control={control}
                             label="Valor do empréstimo"
@@ -191,7 +191,7 @@ const Simulator = () => {
                             errors={errors}
                         />
                     </div>
-                    <div className="sm:col-span-12 md:col-span-3 md:mx-auto">
+                    <div className=" md:mx-auto">
                         <InputRadio
                             control={control}
                             label="Tipo"
@@ -203,7 +203,7 @@ const Simulator = () => {
                             ]}
                         />
                     </div>
-                    <div className="sm:col-span-12 md:col-span-3">
+                    <div className="">
                         <InputPercentage
                             control={control}
                             label="Taxa de juros (%)"
@@ -211,7 +211,7 @@ const Simulator = () => {
                             errors={errors}
                         />
                     </div>
-                    <div className="sm:col-span-12 md:col-span-3">
+                    <div className="">
                         <InputQuantity
                             control={control}
                             label="Quantidade de parcelas"
@@ -220,7 +220,7 @@ const Simulator = () => {
                         />
                     </div>
                     {/* {formValues.type === "installment" && ( */}
-                    <div className="sm:col-span-12 md:col-span-3">
+                    <div className="">
                         <InputCurrency
                             control={control}
                             label="Valor da parcela"
@@ -229,10 +229,10 @@ const Simulator = () => {
                         />
                     </div>
                     {/* )} */}
-                    <div className="col-span-12">
+                    <div className="">
                         <h2 className="text-lg text-primary mt-4 border-b border-secondary/50">Vencimentos</h2>
                     </div>
-                    <div className="sm:col-span-12 md:col-span-3">
+                    <div className="">
                         {formValues.installments > 0 &&
                             Array.from({ length: formValues.installments }).map((_, index) => (
                                 <div key={index} className="mb-4">
@@ -252,8 +252,8 @@ const Simulator = () => {
                     </Button>
                 </div>
             </form>
-            <div className="mt-8 py-3 text-xl grid grid-cols-12">
-                <h2 className="text-xl mb-4 col-span-12">Resultado da simulação:</h2>
+            <div className="mt-8 mb-16 py-3 text-xl">
+                <h2 className="text-xl mb-4 ">Resultado da simulação:</h2>
                 {calculationResult ? (
                     <div className="col-span-6">
                         <Table

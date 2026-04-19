@@ -21,7 +21,8 @@ function App() {
         <Nav />
         <div>
           <Routes>
-            <Route index path="/" element={<Dashboard />} />
+            {/* <Route index path="/" element={<Dashboard />} /> */}
+            <Route index path="/" element={<Simulator />} />
             <Route path="/customers">
               <Route index element={<Customers />} />
               <Route path="create" element={<CreateCustomer />} />
