@@ -1,11 +1,10 @@
-import { Outlet } from "react-router"
+import { NavLink, Outlet } from "react-router"
 import Section from "../../components/ui/Section"
 import { useEffect, useState } from "react"
 import { CustomerService } from "../../services/customer"
 import type { ICustomerListItem } from "./types"
 import { useLoader } from "../../contexts/Loader/useLoader"
 import ButtonLink from "../../components/ui/ButtonNavLink"
-import Table from "../../components/ui/Table"
 
 const Customers = () => {
   const [list, setList] = useState<ICustomerListItem[]>([]);
@@ -36,32 +35,20 @@ const Customers = () => {
         </ButtonLink>
       }
     >
-      <Table
-        counterInfo={`${list.length} cliente${list.length !== 1 ? 's' : ''} encontrado${list.length !== 1 ? 's' : ''}`}
-        columns={[
-          { header: 'ID', accessor: 'uuid' },
-          { header: 'Nome', accessor: 'name' },
-          { header: 'Telefone', accessor: 'phone' },
-          { header: 'Empréstimo', accessor: 'loansCount' },
-          { header: 'Status', accessor: 'status' },
-          {
-            header: "Ações",
-            accessor: "uuid",
-            // render: (_, row) => (
-            //   <div className="flex justify-end gap-2">
-            //     <ButtonIconNavLink
-            //       to={`/customers/${row.uuid}`}
-            //       icon={<Eye size={16} />}
-            //       label="Ver detalhes do cliente"
-            //     />
-
-            //   </div>
-            // ),
-          }
-        ]}
-        data={list}
-
-      />
+      {list.length > 0 ? (
+          <ul>
+            {list.map((customer) => (
+              <li key={customer.uuid} className="bg-white p-3 shadow-sm rounded-md mb-4">
+                <NavLink to={`/customers/${customer.uuid}`} className="block hover:bg-gray-100 rounded-md p-2">
+                  <p><strong>Nome:</strong> {customer.name}</p>
+                  {/* <p><strong>Telefone:</strong> {customer.phone}</p> */}
+                  <p><strong>Empréstimos:</strong> {customer.loansCount}</p>
+                  {/* <p><strong>Status:</strong> {customer.status}</p> */}
+                </NavLink>
+              </li>
+            ))}
+          </ul>
+      ) : (<p>Nenhum cliente encontrado</p>)}
       <Outlet />
     </Section>
   )

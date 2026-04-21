@@ -10,7 +10,7 @@ import InputText from "../../../components/ui/Input/InputText";
 import InputPhone from "../../../components/ui/Input/InputPhone";
 import Table from "../../../components/ui/Table";
 import IconButton from "../../../components/ui/ButtonIcon";
-import { Eye } from "lucide-react";
+import { Eye, Pencil } from "lucide-react";
 import ButtonNavLink from "../../../components/ui/ButtonNavLink";
 import TaxBadge from "../../../components/ui/TaxBadge";
 
@@ -27,11 +27,12 @@ type FormData = z.infer<typeof schema>;
 const Details = () => {
     const { id } = useParams();
     const navigate = useNavigate();
-    const [, setIsEdit] = useState(false);
+    const [isEdit, setIsEdit] = useState(false);
     const {
         register,
         control,
         reset,
+        watch,
         handleSubmit,
         formState: { errors },
     } = useForm<FormData>({
@@ -87,41 +88,49 @@ const Details = () => {
         <Section
             title="Detalhes do Cliente"
             action={
-                <Button variant="destructive" onClick={() => handleDelete()}>Excluir cliente</Button>
+                (isEdit) ? (
+                    <Button variant="primary" onClick={() => setIsEdit(false)}>Salvar</Button>
+                ) : (
+                    <IconButton variant="primary" onClick={() => setIsEdit(true)} icon={<Pencil size={20} />} label="Editar" />
+                )
 
             }
         >
-            <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-3 my-4">
-                <div className="w-full md:w-1/2">
-                    <InputText
-                        label="Nome"
-                        placeholder="Digite o nome do cliente"
-                        name="name"
-                        register={register}
-                        errors={errors}
-                    />
-                </div>
+            {isEdit ? (
+                <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-3 my-4">
+                    <div className="w-full md:w-1/2">
+                        <InputText
+                            label="Nome"
+                            placeholder="Digite o nome do cliente"
+                            name="name"
+                            register={register}
+                            errors={errors}
+                        />
+                    </div>
 
-                {/* Telefone */}
-                <div className="w-full md:w-1/2">
-                    <InputPhone
-                        label="Telefone"
-                        name="phone"
-                        control={control}
-                        errors={errors}
-                    />
+                    {/* Telefone */}
+                    <div className="w-full md:w-1/2">
+                        <InputPhone
+                            label="Telefone"
+                            name="phone"
+                            control={control}
+                            errors={errors}
+                        />
+                    </div>
+                </form>
+            ) : (
+                <div>
+                    <div className="flex items-center justify-between w-full">
+                        <h2 className="text-primary">{watch('name')}</h2>
+                        <TaxBadge tax={20} taxByCustomer />
+                    </div>
+                    <p className="text-sm">{watch('phone')}</p>
                 </div>
+            )}
 
-                <div className="flex justify-end gap-4 fixed bottom-0 left-0 w-full px-8 py-4 bg-white">
-                    <NavLink to="/customers">
-                        <Button variant="outline_primary">Cancelar</Button>
-                    </NavLink>
-                    <Button type="submit">Salvar cliente</Button>
-                </div>
-            </form>
 
-            <h2 className="mt-12 pt-3 text-primary
-             text-2xl border-t border-primary/20">Histórico de pagamentos</h2>
+            <h2 className="mt-8 pt-2 text-primary
+             text-lg border-t border-primary/20">Histórico de pagamentos</h2>
             {/* <div className="mt-8">
                 <Accordion
                     header={
@@ -167,7 +176,7 @@ const Details = () => {
                     </div>
                 </Accordion>
             </div> */}
-            <div className="mt-8">
+            <div className="mt-4">
                 <div className="flex flex-col gap-3">
                     {/* <div className=" flex flex-col bg-secondary/20 rounded-sm p-2">
                             <p>Taxa média mensal: 20%</p>
@@ -194,12 +203,9 @@ const Details = () => {
                 </div>
             </div>
             <section className="border-t border-primary/20 mt-12">
-                <div className="flex justify-between items-end mb-8">
-                    <div className="flex items-end gap-2">
-                    <h2 className="pt-3 text-primary text-2xl">Empréstimos</h2>
-                    <TaxBadge tax={20} taxByCustomer/>
-                    </div>
-                    <ButtonNavLink to="/loans" variant="outline_primary" className="mt-4">
+                <div className="flex items-end justify-between mb-4">
+                    <h2 className="py-2 text-primary text-lg">Empréstimos</h2>
+                    <ButtonNavLink to="/loans" variant="link_primary">
                         Ver todos os empréstimos
                     </ButtonNavLink>
                 </div>
@@ -208,18 +214,7 @@ const Details = () => {
                         { header: "Número", accessor: "name" },
                         { header: "Valor emprestado", accessor: "amount_borrowed" },
                         { header: "Valor cobrado", accessor: "amount_charged" },
-                        { header: "Total de parcelas", accessor: "installments_total" },
                         { header: "Parcelas restantes", accessor: "installments_missing" },
-                        {
-                            header: "Ações", accessor: "name", render: (_) => (
-                                <div className="flex justify-end gap-2">
-                                    <IconButton
-                                        icon={<Eye size={16} />}
-                                        label="Detalhes do empréstimo"
-                                    />
-                                </div>
-                            ),
-                        },
                     ]}
                     data={[
                         { id: 1, name: "1", amount_borrowed: "600,00", amount_charged: "720,00", installments_total: "6", installments_missing: "4" },

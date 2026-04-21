@@ -191,7 +191,7 @@ const Simulator = () => {
                             errors={errors}
                         />
                     </div>
-                    <div className=" md:mx-auto">
+                    <div>
                         <InputRadio
                             control={control}
                             label="Tipo"

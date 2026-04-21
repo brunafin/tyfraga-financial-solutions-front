@@ -1,10 +1,10 @@
-import { Calculator } from "lucide-react"
+import { Calculator, User } from "lucide-react"
 import { NavLink, useLocation } from "react-router"
 
 const Nav = () => {
     const routeLocation = useLocation().pathname;
     return (
-        <nav className="bg-primary fixed w-full bottom-0 md:bg-primary md:w-20 md:h-full p-3">
+        <nav className="bg-primary bottom-0 fixed w-full md:w-20 h-20 md:h-full p-3">
             <ul className="flex md:flex-col gap-6 justify-around">
                 {/* <li>
                     <NavLink to="/" className={`hover:bg-secondary hover:rounded-md p-3 flex justify-center ${routeLocation === '/' ? 'bg-secondary rounded-md' : ''}`}>
@@ -25,13 +25,13 @@ const Nav = () => {
                     <NavLink to="/payments" className={`hover:bg-secondary hover:rounded-md p-3 flex justify-center ${routeLocation === '/payments' ? 'bg-secondary rounded-md' : ''}`}>
                         <HandCoins className="text-white w-6" />
                     </NavLink>
-                </li>
+                </li> */}
                 <li>
                     <NavLink to="/customers" className={`hover:bg-secondary hover:rounded-md p-3 flex justify-center ${routeLocation === '/customers' ? 'bg-secondary rounded-md' : ''}`}>
                         <User className="text-white w-6" />
                     </NavLink>
                 </li>
-                <li>
+                {/* <li>
                     <NavLink to="/config" className={`hover:bg-secondary hover:rounded-md p-3 flex justify-center ${routeLocation === '/config' ? 'bg-secondary rounded-md' : ''}`}>
                         <Cog className="text-white w-6" />
                     </NavLink>

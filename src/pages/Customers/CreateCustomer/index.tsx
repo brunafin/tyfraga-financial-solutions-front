@@ -46,7 +46,7 @@ const CreateCustomer = () => {
 
   return (
     <Section title="Novo Cliente">
-      <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col w-3/4 gap-3">
+      <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col md:w-3/4 gap-3">
 
         {/* Nome */}
         <div className="w-full md:w-1/2">
@@ -69,7 +69,7 @@ const CreateCustomer = () => {
         />
         </div>
 
-        <div className="flex justify-end gap-4 fixed bottom-0 left-0 w-full px-8 py-4 bg-white">
+        <div className="flex justify-end gap-3 w-full mt-8">
           <NavLink to="/customers">
             <Button variant="outline_primary">Cancelar</Button>
           </NavLink>
