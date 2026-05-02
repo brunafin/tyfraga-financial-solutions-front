@@ -1,4 +1,4 @@
-import { useNavigate, useParams } from "react-router";
+import { useParams } from "react-router";
 import Section from "../../../components/ui/Section";
 import { useEffect, useState } from "react";
 import { CustomerService } from "../../../services/customer";
@@ -11,7 +11,6 @@ import InputPhone from "../../../components/ui/Input/InputPhone";
 import Table from "../../../components/ui/Table";
 import IconButton from "../../../components/ui/ButtonIcon";
 import { Pencil } from "lucide-react";
-import ButtonNavLink from "../../../components/ui/ButtonNavLink";
 import TaxBadge from "../../../components/ui/TaxBadge";
 
 const schema = z.object({
@@ -26,7 +25,7 @@ type FormData = z.infer<typeof schema>;
 
 const Details = () => {
     const { id } = useParams();
-    const navigate = useNavigate();
+    // const navigate = useNavigate();
     const [isEdit, setIsEdit] = useState(false);
     const {
         register,
@@ -39,17 +38,17 @@ const Details = () => {
         resolver: zodResolver(schema),
     });
 
-    const handleDelete = async () => {
-        if (!id) return;
-        try {
-            await CustomerService.deleteCustomer(id);
-            alert("Cliente excluído com sucesso!");
-            navigate("/customers");
-        } catch (error) {
-            console.error('Erro ao excluir cliente:', error);
-            alert("Ocorreu um erro ao excluir o cliente.");
-        }
-    }
+    // const handleDelete = async () => {
+    //     if (!id) return;
+    //     try {
+    //         await CustomerService.deleteCustomer(id);
+    //         alert("Cliente excluído com sucesso!");
+    //         navigate("/customers");
+    //     } catch (error) {
+    //         console.error('Erro ao excluir cliente:', error);
+    //         alert("Ocorreu um erro ao excluir o cliente.");
+    //     }
+    // }
 
     const onSubmit = async (data: FormData) => {
         try {
