@@ -159,7 +159,7 @@ const Details = () => {
                     <div className="flex items-center gap-2 mb-3">
                         <h2 className="text-xl font-bold">{watch('name')}</h2>
                         <a
-                            href={`https://wa.me/${watch('phone')}`}
+                            href={`https://wa.me/+55${watch('phone')}`}
                             target="_blank"
                             rel="noopener noreferrer"
                             className="underline"
