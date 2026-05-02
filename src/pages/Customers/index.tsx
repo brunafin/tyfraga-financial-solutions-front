@@ -36,6 +36,8 @@ const Customers = () => {
       }
     >
       {list.length > 0 ? (
+        <>
+        <p className="text-sm text-primary/80 border-b border-primary/10 mb-3">{list.length} clientes encontrados</p>
         <ul>
           {list.map((customer) => (
             <li key={customer.uuid} className="bg-white p-2 shadow-sm rounded-md mb-2">
@@ -46,6 +48,7 @@ const Customers = () => {
             </li>
           ))}
         </ul>
+        </>
       ) : (<p>Nenhum cliente encontrado</p>)}
       <Outlet />
     </Section>

@@ -29,7 +29,9 @@ function App() {
               <Route path=":id" element={<Details />} />
             </Route>
             <Route path="simulator" element={<Simulator />} />
-            <Route path="loans" element={<NotDevelopment />} />
+            <Route path="loans" element={<NotDevelopment />}>
+              <Route path=":id" element={<NotDevelopment />} />
+            </Route>
             <Route path="payments" element={<NotDevelopment />} />
             <Route path="config" element={<Config />} />
             <Route path="config/ui" element={<UiComponents />} />

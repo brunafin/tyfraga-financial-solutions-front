@@ -26,11 +26,11 @@ const Nav = () => {
                         <User className="text-white w-6" />
                     </NavLink>
                 </li>
-                <li>
+                {/* <li>
                     <NavLink to="/loans" className={`hover:bg-secondary hover:rounded-md p-3 flex justify-center ${routeLocation === '/loans' ? 'bg-secondary rounded-md' : ''}`}>
                         <BanknoteArrowUp className="text-white w-6" />
                     </NavLink>
-                </li>
+                </li> */}
                 {/* <li>
                     <NavLink to="/config" className={`hover:bg-secondary hover:rounded-md p-3 flex justify-center ${routeLocation === '/config' ? 'bg-secondary rounded-md' : ''}`}>
                         <Cog className="text-white w-6" />

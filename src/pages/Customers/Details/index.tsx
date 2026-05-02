@@ -38,9 +38,10 @@ interface ICustomerDetail {
     profit_pending: number;
     loans:
     {
-        id: string;
+        // id: number;
+        uuid: string;
         tax: number;
-        original_value: number;
+        // original_value: number;
         loan_value: number;
         status: boolean;
     }[];
@@ -170,7 +171,7 @@ const Details = () => {
                     </div>
                 </div>
             )}
-            <ul>
+            <ul className="text-sm">
                 <li>Total Emprestado: {' '}
 
                     {formatCentsToRealBRL(customer?.amount_loaned || 0)}
@@ -181,7 +182,7 @@ const Details = () => {
                     {formatCentsToRealBRL(customer?.amount_interest_loaned || 0)}
 
                 </li>
-                <li className="mt-4">Total Recebido: {' '}
+                <li className="mt-2">Total Recebido: {' '}
 
                     {formatCentsToRealBRL(customer?.amount_received || 0)}
 
@@ -189,7 +190,7 @@ const Details = () => {
                 <li>Total lucro: {' '}
                     {formatCentsToRealBRL(customer?.profit || 0)}
                 </li>
-                <li className="flex flex-col p-4 mt-6 w-full rounded-lg bg-secondary/10 items-center">Valor pendente
+                <li className="flex flex-col p-3 mt-3 w-full rounded-lg bg-secondary/10 items-center">Valor pendente
                     <strong>{formatCentsToRealBRL(customer?.amount_pending_receive || 0)}</strong>
                     <span className="text-sm">{formatCentsToRealBRL(customer?.profit_pending || 0)} (lucro)</span>
                 </li>
@@ -299,8 +300,8 @@ const Details = () => {
                 /> */}
                 <ul>
                     {customer?.loans.map((loan) => (
-                        <li key={loan.id} className={`${loan.status ? '' : 'border-l-4 border-yellow-500'} bg-white p-2 shadow-sm rounded-md mb-2`}>
-                            <NavLink to={`/loans/${loan.id}`} className="flex justify-between items-center text-primary/90 rounded-md p-2">
+                        <li key={loan.uuid} className={`${loan.status ? '' : 'border-l-4 border-amber-500'} bg-white p-2 shadow-sm rounded-md mb-2`}>
+                            <NavLink to={`/loans/${loan.uuid}`} className="flex justify-between items-center text-primary/90 rounded-md p-2">
                                 {loan.status ? <Check className="text-secondary" size={18} /> : <Clock className="text-primary/80" size={18} />}
                                 {formatCentsToRealBRL(loan.loan_value)}
                                 <ChevronRight className="text-primary/50" />
