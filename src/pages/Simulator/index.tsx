@@ -195,7 +195,7 @@ const Simulator = () => {
                             />
                         </div>
                     </div>
-                    <div>
+                    <div className="flex-1">
                         <InputDate
                             label="Data empréstimo"
                             name="initial_date"
