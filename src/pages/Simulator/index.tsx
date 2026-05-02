@@ -194,9 +194,6 @@ const Simulator = () => {
                                 placeholder="Selecione um cliente"
                             />
                         </div>
-                        <div className="mb-2">
-                            <TaxBadge tax={customers.find((item) => item.uuid === watch('customer_id'))?.averageTax || 20} taxByCustomer={!!formValues.customer_id && !!customers.find((item) => item.uuid === watch('customer_id'))?.averageTax} />
-                        </div>
                     </div>
                     <div>
                         <InputDate
@@ -226,45 +223,22 @@ const Simulator = () => {
                             ]}
                         />
                     </div>
-                    <div>
-                        <InputPercentage
-                            control={control}
-                            label="Taxa de juros (%)"
-                            name="tax"
-                            errors={errors}
-                        />
-                    </div>
-                    {/* <div>
-                        <InputQuantity
-                            control={control}
-                            label="Quantidade de parcelas"
-                            name="installments"
-                            errors={errors}
-                            onChange={(value) => {
-                                const newInstallments = Number(value);
-                                const payment_dates = getValues("payment_dates") || [];
-
-                                setValue("installments", newInstallments);
-
-                                let updatedDates;
-
-                                if (newInstallments > payment_dates.length) {
-                                    updatedDates = [
-                                        ...payment_dates,
-                                        ...Array.from(
-                                            { length: newInstallments - payment_dates.length },
-                                            () => ""
-                                        ),
-                                    ];
-                                } else {
-                                    updatedDates = payment_dates.slice(0, newInstallments);
-                                }
-
-                                setValue("payment_dates", updatedDates, { shouldDirty: true });
-                            }}
-                        />
-                    </div> */}
-                    {/* {formValues.type === "installment" && ( */}
+                    {formValues.type === "tax" && (
+                        <>
+                            <div>
+                                <TaxBadge tax={customers.find((item) => item.uuid === watch('customer_id'))?.averageTax || 20} taxByCustomer={!!formValues.customer_id && !!customers.find((item) => item.uuid === watch('customer_id'))?.averageTax} />
+                            </div>
+                            <div>
+                                <InputPercentage
+                                    control={control}
+                                    label="Taxa de juros (%)"
+                                    name="tax"
+                                    errors={errors}
+                                />
+                            </div>
+                        </>
+                    )}
+                    {formValues.type === "installment" && (
                     <div>
                         <InputCurrency
                             control={control}
@@ -273,7 +247,7 @@ const Simulator = () => {
                             errors={errors}
                         />
                     </div>
-                    {/* )} */}
+                    )}
                     <div>
                         <h2 className="text-lg text-primary mt-4 border-b border-secondary/50">Vencimentos</h2>
                     </div>

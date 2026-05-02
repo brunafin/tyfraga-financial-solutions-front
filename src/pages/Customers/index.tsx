@@ -39,12 +39,9 @@ const Customers = () => {
         <ul>
           {list.map((customer) => (
             <li key={customer.uuid} className="bg-white p-2 shadow-sm rounded-md mb-2">
-              <NavLink to={`/customers/${customer.uuid}`} className="flex justify-between items-center hover:bg-gray-100 rounded-md p-2">
-                <div>
-                  <p><strong>Nome:</strong> {customer.name}</p>
-                  <p><strong>Empréstimos:</strong> {customer.loansCount}</p>
-                </div>
-                <ChevronRight className="text-secondary" />
+              <NavLink to={`/customers/${customer.uuid}`} className="flex justify-between items-center text-primary/90 rounded-md p-2">
+                {customer.name}
+                <ChevronRight className="text-primary/50" />
               </NavLink>
             </li>
           ))}

@@ -1,4 +1,4 @@
-import { useParams } from "react-router";
+import { NavLink, useParams } from "react-router";
 import Section from "../../../components/ui/Section";
 import { useEffect, useState } from "react";
 import { CustomerService } from "../../../services/customer";
@@ -8,9 +8,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import Button from "../../../components/ui/Button";
 import InputText from "../../../components/ui/Input/InputText";
 import InputPhone from "../../../components/ui/Input/InputPhone";
-import Table from "../../../components/ui/Table";
 import IconButton from "../../../components/ui/ButtonIcon";
-import { Pencil } from "lucide-react";
+import { Check, ChevronRight, Clock, Pencil } from "lucide-react";
 import TaxBadge from "../../../components/ui/TaxBadge";
 import formatCentsToRealBRL from "../../../utils/formatCentsToRealBRL";
 import { useLoader } from "../../../contexts/Loader/useLoader";
@@ -35,13 +34,15 @@ interface ICustomerDetail {
     amount_pending_receive: number;
     amount_interest_loaned: number;
     average_tax: number;
+    profit: number;
+    profit_pending: number;
     loans:
     {
         id: string;
         tax: number;
         original_value: number;
         loan_value: number;
-        status: string;
+        status: boolean;
     }[];
 }
 
@@ -111,11 +112,11 @@ const Details = () => {
         }
     }, [id])
 
-        if(loading){
-            return(
-                <></>
-            )
-        }
+    if (loading) {
+        return (
+            <></>
+        )
+    }
 
     return (
         <Section
@@ -169,29 +170,28 @@ const Details = () => {
                     </div>
                 </div>
             )}
-            <ul className="rounded-sm">
-                <li>Empréstimos: {' '}
-                    <strong className="font-bold">{customer?.total_loans}</strong>
+            <ul>
+                <li>Total Emprestado: {' '}
+
+                    {formatCentsToRealBRL(customer?.amount_loaned || 0)}
+
                 </li>
-                <li>Valor Emprestado: {' '}
-                    <strong className="font-bold">
-                        {formatCentsToRealBRL(customer?.amount_loaned || 0)}
-                    </strong>
+                <li>Total com juros: {' '}
+
+                    {formatCentsToRealBRL(customer?.amount_interest_loaned || 0)}
+
                 </li>
-                <li>Valor Emprestado com juros: {' '}
-                    <strong className="font-bold">
-                        {formatCentsToRealBRL(customer?.amount_interest_loaned || 0)}
-                    </strong>
+                <li className="mt-4">Total Recebido: {' '}
+
+                    {formatCentsToRealBRL(customer?.amount_received || 0)}
+
                 </li>
-                <li>Valor Recebido: {' '}
-                    <strong className="font-bold">
-                        {formatCentsToRealBRL(customer?.amount_received || 0)}
-                    </strong>
+                <li>Total lucro: {' '}
+                    {formatCentsToRealBRL(customer?.profit || 0)}
                 </li>
-                <li className="flex flex-col p-4 mt-6 border-l-4 border-amber-400 w-full rounded-lg shadow items-center">Valor pendente
-                    <strong className="font-bold">
-                        {formatCentsToRealBRL(customer?.amount_pending_receive || 0)}
-                    </strong>
+                <li className="flex flex-col p-4 mt-6 w-full rounded-lg bg-secondary/10 items-center">Valor pendente
+                    <strong>{formatCentsToRealBRL(customer?.amount_pending_receive || 0)}</strong>
+                    <span className="text-sm">{formatCentsToRealBRL(customer?.profit_pending || 0)} (lucro)</span>
                 </li>
                 {/* <li className="mt-2">
                     <TaxBadge tax={customer?.average_tax || 0} taxByCustomer />
@@ -279,12 +279,16 @@ const Details = () => {
                     <h2 className="py-2 text-primary text-lg">Empréstimos</h2>
                     <TaxBadge tax={customer?.average_tax || 0} taxByCustomer />
                 </div>
-                <Table
+                {/* <Table
                     columns={[
                         { header: "ID", accessor: "id" },
                         { header: "Emprestado", accessor: "original_value" },
                         { header: "Cobrado", accessor: "loan_value" },
-                        { header: "Status", accessor: "status" },
+                        {
+                            header: "Status", accessor: "status", render: (value) => (value === true
+                                ? <Check className="text-secondary" size={18} />
+                                : <Clock className="text-primary/50" size={18} />)
+                        },
                     ]}
                     data={customer?.loans.map((item) => ({
                         id: item.id,
@@ -292,7 +296,18 @@ const Details = () => {
                         loan_value: formatCentsToRealBRL(item.loan_value) || "",
                         status: item.status,
                     })) || []}
-                />
+                /> */}
+                <ul>
+                    {customer?.loans.map((loan) => (
+                        <li key={loan.id} className={`${loan.status ? '' : 'border-l-4 border-yellow-500'} bg-white p-2 shadow-sm rounded-md mb-2`}>
+                            <NavLink to={`/loans/${loan.id}`} className="flex justify-between items-center text-primary/90 rounded-md p-2">
+                                {loan.status ? <Check className="text-secondary" size={18} /> : <Clock className="text-primary/80" size={18} />}
+                                {formatCentsToRealBRL(loan.loan_value)}
+                                <ChevronRight className="text-primary/50" />
+                            </NavLink>
+                        </li>
+                    ))}
+                </ul>
             </section>
             {/* <Button variant="destructive" size="full" onClick={handleDelete}>
                 Excluir cliente
