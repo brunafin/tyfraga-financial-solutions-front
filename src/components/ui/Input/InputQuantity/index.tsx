@@ -6,9 +6,10 @@ type InputQuantityProps = {
   control: any;
   errors?: any;
   disabled?: boolean;
+  onChange?: (value: number | null) => void;
 };
 
-const InputQuantity = ({ label, name, control, errors, disabled }: InputQuantityProps) => {
+const InputQuantity = ({ label, name, control, errors, disabled, onChange }: InputQuantityProps) => {
   return (
     <label className={`flex flex-col gap-1 ${disabled ? "opacity-50" : ""}`}>
       {label}
@@ -25,7 +26,14 @@ const InputQuantity = ({ label, name, control, errors, disabled }: InputQuantity
             value={field.value ?? ""}
             onChange={(e) => {
               const onlyNumbers = e.target.value.replace(/\D/g, "");
-              field.onChange(onlyNumbers === "" ? "" : Number(onlyNumbers));
+
+              const parsedValue = onlyNumbers === "" ? "" : Number(onlyNumbers);
+
+              field.onChange(parsedValue);
+
+              if (onChange) {
+                onChange(parsedValue === "" ? null : Number(parsedValue));
+              }
             }}
             placeholder="0"
             className="border border-gray-400 rounded-md p-2 focus:outline-none focus:ring-1 focus:ring-primary disabled:cursor-not-allowed"

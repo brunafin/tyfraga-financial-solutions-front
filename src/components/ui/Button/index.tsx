@@ -17,7 +17,7 @@ const classNamesBase = `${size === 'full' ? 'w-full' : 'w-fit'} py-2 px-4 rounde
     }
 
     return (
-        <button className={variants[variant || "primary"]} {...props}>
+        <button className={`${className} ${variants[variant || "primary"]} ${props.disabled && 'disabled:cursor-not-allowed disabled:bg-primary/20'}`} {...props}>
             {children}
         </button>
     )

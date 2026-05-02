@@ -12,19 +12,20 @@ import InputSelect from "../../components/ui/Input/InputSelect";
 import InputDate from "../../components/ui/Input/InputDate";
 import InputCurrency from "../../components/ui/Input/InputCurrency";
 import InputRadio from "../../components/ui/Input/InputRadio";
-import InputQuantity from "../../components/ui/Input/InputQuantity";
 import InputPercentage from "../../components/ui/Input/InputPercentage";
 import { calculateByRate } from "../../utils/calculateInstallmentValue";
 import { calculateByInstallment } from "../../utils/calculateTax";
 import Table from "../../components/ui/Table";
 import formatToCurrencyBRL from "../../utils/formatToCurrencyBRL";
 import { formatDateBR } from "../../utils/formatDateBR";
+import { LoanService } from "../../services/loan";
+import IconButton from "../../components/ui/ButtonIcon";
+import { PlusCircle, TrashIcon } from "lucide-react";
 
 const schema = z.object({
     customer_id: z.string(),
     initial_date: z.string(),
     value: z.number().positive("O valor deve ser positivo").nullable(),
-    installments: z.number().int().positive("O número de parcelas deve ser um inteiro positivo").max(8, "O número de parcelas deve ser no máximo 8"),
     installment_value: z.number().positive("O valor da parcela deve ser positivo"),
     tax: z.number().min(0, "A taxa deve ser um número positivo ou zero"),
     observation: z.string().optional(),
@@ -44,6 +45,7 @@ const Simulator = () => {
         register,
         control,
         watch,
+        getValues,
         setValue,
         handleSubmit,
         formState: { errors },
@@ -53,7 +55,6 @@ const Simulator = () => {
             customer_id: "",
             initial_date: new Date().toISOString().split("T")[0],
             value: null,
-            installments: 2,
             installment_value: 0,
             tax: 20,
             observation: "",
@@ -63,9 +64,6 @@ const Simulator = () => {
     });
 
     const formValues = watch();
-
-    console.log('resultado:', calculationResult);
-    console.log(formValues);
 
     useEffect(() => {
         const fetchCustomers = async () => {
@@ -82,22 +80,44 @@ const Simulator = () => {
         fetchCustomers();
     }, [])
 
-    const onSubmit = (data: FormData) => {
-        console.log('Simulação enviada:', data);
-        // Aqui você pode adicionar a lógica para enviar os dados para o backend ou processá-los conforme necessário
+    const onSubmit = async (data: FormData) => {
+        if (!data.value) {
+            return alert("Preencha o valor do empréstimo");
+        }
+        const obj = {
+            customer_id: data.customer_id,
+            original_value: data.value,
+            loan_value: calculationResult?.totalWithInterest * 100,
+            loan_date: data.initial_date,
+            tax: data.tax,
+            installment_value: data.installment_value,
+            installments: formValues.payment_dates?.map((date, index) => ({
+                ref: index + 1,
+                due_date: date,
+            })) || [],
+            observation: data.observation,
+        }
+        try {
+            showLoader();
+            await LoanService.createLoan(obj);
+            alert("Empréstimo criado com sucesso!");
+        } catch (error) {
+            console.error('Erro ao criar empréstimo:', error);
+            alert("Ocorreu um erro ao criar o empréstimo. Por favor, tente novamente.");
+        } finally {
+            hideLoader();
+        }
     };
 
     const handleCalculationLoan = () => {
         const values = watch();
 
-        console.log('Valores para cálculo:', values);
-
         const payment_dates: Date[] =
             formValues.payment_dates
                 ?.map((date) => (date ? new Date(date) : null))
                 .filter(Boolean) as Date[] || [];
-        if (formValues.payment_dates?.length !== formValues.installments) {
-            console.log('Datas de pagamento:', payment_dates, 'Número de parcelas:', formValues.installments);
+        if (formValues.payment_dates?.length !== formValues.payment_dates?.length || 0 || payment_dates.length === 0) {
+            console.log('Datas de pagamento:', payment_dates, 'Número de parcelas:', formValues.payment_dates?.length);
             alert("Preencha todas as datas das parcelas");
             return;
         }
@@ -211,14 +231,36 @@ const Simulator = () => {
                             errors={errors}
                         />
                     </div>
-                    <div>
+                    {/* <div>
                         <InputQuantity
                             control={control}
                             label="Quantidade de parcelas"
                             name="installments"
                             errors={errors}
+                            onChange={(value) => {
+                                const newInstallments = Number(value);
+                                const payment_dates = getValues("payment_dates") || [];
+
+                                setValue("installments", newInstallments);
+
+                                let updatedDates;
+
+                                if (newInstallments > payment_dates.length) {
+                                    updatedDates = [
+                                        ...payment_dates,
+                                        ...Array.from(
+                                            { length: newInstallments - payment_dates.length },
+                                            () => ""
+                                        ),
+                                    ];
+                                } else {
+                                    updatedDates = payment_dates.slice(0, newInstallments);
+                                }
+
+                                setValue("payment_dates", updatedDates, { shouldDirty: true });
+                            }}
                         />
-                    </div>
+                    </div> */}
                     {/* {formValues.type === "installment" && ( */}
                     <div>
                         <InputCurrency
@@ -233,40 +275,77 @@ const Simulator = () => {
                         <h2 className="text-lg text-primary mt-4 border-b border-secondary/50">Vencimentos</h2>
                     </div>
                     <div>
-                        {formValues.installments > 0 &&
-                            Array.from({ length: formValues.installments }).map((_, index) => (
-                                <div key={index}>
-                                    <InputDate
-                                        label={`Data da parcela ${index + 1}`}
-                                        name={`payment_dates.${index}`}
-                                        register={register}
-                                        errors={errors}
-                                    />
+                        {formValues.payment_dates && formValues.payment_dates.length > 0 &&
+                            Array.from({ length: formValues.payment_dates.length }).map((_, index) => (
+                                <div key={index} className=" flex items-end mb-4">
+                                    <div className="flex-1">
+                                        <InputDate
+                                            label={`Data da parcela ${index + 1}`}
+                                            name={`payment_dates.${index}`}
+                                            register={register}
+                                            errors={errors}
+                                        />
+                                    </div>
+
+                                    {index > 0 && (
+                                        <IconButton
+                                            variant="destructive"
+                                            label="Remover parcela"
+                                            icon={<TrashIcon />}
+                                            onClick={() => {
+                                                const currentDates = getValues("payment_dates") || [];
+                                                setValue("payment_dates", currentDates.filter((_: any, i: number) => i !== index), { shouldDirty: true });
+
+                                            }}
+                                        />
+                                    )}
                                 </div>
                             ))}
+                        <div className="flex justify-center">
+                            <Button type="button" className="flex items-center gap-2" variant="link_primary" onClick={() => {
+                                const currentDates = getValues("payment_dates") || [];
+                                setValue("payment_dates", [...currentDates, ""], { shouldDirty: true });
+                            }}>
+                                <PlusCircle /> Adicionar parcela
+                            </Button>
+                        </div>
                     </div>
                 </div>
                 <div className="my-8">
-                    <Button size="full" type="button" onClick={() => handleCalculationLoan()}>
+                    <Button size="full" type="button" disabled={!!formValues.payment_dates?.some((item) => !item)} onClick={() => handleCalculationLoan()}>
                         Simular
                     </Button>
                 </div>
+                {calculationResult && (
+                    <div className="mt-8 mb-16 py-3">
+                        <h2 className="text-xl mb-3">Resultado da simulação:</h2>
+                        <>
+                            <div className="mb-3 border border-secondary bg-secondary/20 rounded-sm p-3">
+                                <p>Valor total a pagar: <strong>{formatToCurrencyBRL(calculationResult.totalWithInterest)}</strong></p>
+                                <p>Valor total de juros: <strong>{formatToCurrencyBRL(calculationResult.totalInterest)}</strong></p>
+                                <p>Taxa mensal: <strong>{calculationResult.monthlyRate}%</strong></p>
+                            </div>
+                            <div>
+                                <Table
+                                    columns={[
+                                        { header: "Parcela", accessor: "installment" },
+                                        { header: "Vencimento", accessor: "due_date" },
+                                        { header: "Valor", accessor: "installmentValue" },
+                                    ]}
+                                    data={tableData}
+                                />
+                            </div>
+                        </>
+                    </div>
+                )}
+                {calculationResult && formValues.customer_id && (
+                    <div className="mb-8">
+                        <Button size="full" type="submit" variant="secondary">
+                            Emprestar
+                        </Button>
+                    </div>
+                )}
             </form>
-                <div className="mt-8 mb-16 py-3 text-xl">
-                    <h2 className="text-xl mb-4 ">Resultado da simulação:</h2>
-                    {calculationResult ? (
-                        <div>
-                            <Table
-                                columns={[
-                                    { header: "Parcela", accessor: "installment" },
-                                    { header: "Vencimento", accessor: "due_date" },
-                                    { header: "Valor", accessor: "installmentValue" },
-                                ]}
-                                data={tableData}
-                            />
-                        </div>
-                    ) : <p>Nenhum resultado</p>}
-                </div>
         </Section >
     );
 };

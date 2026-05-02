@@ -1,4 +1,4 @@
-import { useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import Section from "../../../components/ui/Section";
 import { useEffect, useState } from "react";
 import { CustomerService } from "../../../services/customer";
@@ -26,7 +26,7 @@ type FormData = z.infer<typeof schema>;
 
 const Details = () => {
     const { id } = useParams();
-    // const navigate = useNavigate();
+    const navigate = useNavigate();
     const [isEdit, setIsEdit] = useState(false);
     const {
         register,
@@ -39,17 +39,17 @@ const Details = () => {
         resolver: zodResolver(schema),
     });
 
-    // const handleDelete = async () => {
-    //     if (!id) return;
-    //     try {
-    //         await CustomerService.deleteCustomer(id);
-    //         alert("Cliente excluído com sucesso!");
-    //         navigate("/customers");
-    //     } catch (error) {
-    //         console.error('Erro ao excluir cliente:', error);
-    //         alert("Ocorreu um erro ao excluir o cliente.");
-    //     }
-    // }
+    const handleDelete = async () => {
+        if (!id) return;
+        try {
+            await CustomerService.deleteCustomer(id);
+            alert("Cliente excluído com sucesso!");
+            navigate("/customers");
+        } catch (error) {
+            console.error('Erro ao excluir cliente:', error);
+            alert("Ocorreu um erro ao excluir o cliente.");
+        }
+    }
 
     const onSubmit = async (data: FormData) => {
         try {
@@ -89,7 +89,7 @@ const Details = () => {
             title="Detalhes do Cliente"
             action={
                 (isEdit) ? (
-                    <Button variant="primary" onClick={() => setIsEdit(false)}>Salvar</Button>
+                    <Button variant="primary" onClick={() => onSubmit(watch())}>Salvar</Button>
                 ) : (
                     <IconButton variant="primary" onClick={() => setIsEdit(true)} icon={<Pencil size={20} />} label="Editar" />
                 )
@@ -119,18 +119,17 @@ const Details = () => {
                     </div>
                 </form>
             ) : (
-                <div>
-                    <div className="flex items-center justify-between w-full">
-                        <h2 className="text-primary">{watch('name')}</h2>
-                        <TaxBadge tax={20} taxByCustomer />
-                    </div>
-                    <p className="text-sm">{watch('phone')}</p>
+                <div className="flex items-center justify-between border-b border-primary/20 text-primary">
+                    <h2 className="text-lg">{watch('name')}</h2>
+                    <p>{watch('phone')}</p>
                 </div>
             )}
 
-
+            {/* 
             <h2 className="mt-8 pt-2 text-primary
-             text-lg border-t border-primary/20">Histórico de pagamentos</h2>
+             text-lg border-t border-primary/20">
+                Histórico de pagamentos
+            </h2> */}
             {/* <div className="mt-8">
                 <Accordion
                     header={
@@ -176,16 +175,16 @@ const Details = () => {
                     </div>
                 </Accordion>
             </div> */}
-            <div className="mt-4">
-                <div className="flex flex-col gap-3">
-                    {/* <div className=" flex flex-col bg-secondary/20 rounded-sm p-2">
+            {/* <div className="mt-4">
+                <div className="flex flex-col gap-3"> */}
+            {/* <div className=" flex flex-col bg-secondary/20 rounded-sm p-2">
                             <p>Taxa média mensal: 20%</p>
                             <p>Tempo:26 dias</p>
                             <p>Observação: cobrar sempre na segunda-feira</p>
                         </div> */}
 
-                    {/* Aqui entra sua tabela */}
-                    <Table
+            {/* Aqui entra sua tabela */}
+            {/* <Table
                         columns={[
                             { header: "Parcela", accessor: "name" },
                             { header: "Valor", accessor: "price" },
@@ -201,13 +200,11 @@ const Details = () => {
                         ]}
                     />
                 </div>
-            </div>
-            <section className="border-t border-primary/20 mt-12">
-                <div className="flex items-end justify-between mb-4">
+            </div> */}
+            <section className="mt-12 mb-20">
+                <div className="flex items-center justify-between">
                     <h2 className="py-2 text-primary text-lg">Empréstimos</h2>
-                    <ButtonNavLink to="/loans" variant="link_primary">
-                        Ver todos os empréstimos
-                    </ButtonNavLink>
+                    <TaxBadge tax={20} taxByCustomer />
                 </div>
                 <Table
                     columns={[
@@ -221,6 +218,9 @@ const Details = () => {
                     ]}
                 />
             </section>
+            {/* <Button variant="destructive" size="full" onClick={handleDelete}>
+                Excluir cliente
+            </Button> */}
         </Section>
     )
 }

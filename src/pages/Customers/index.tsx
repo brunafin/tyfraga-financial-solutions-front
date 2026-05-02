@@ -5,6 +5,7 @@ import { CustomerService } from "../../services/customer"
 import type { ICustomerListItem } from "./types"
 import { useLoader } from "../../contexts/Loader/useLoader"
 import ButtonLink from "../../components/ui/ButtonNavLink"
+import { ChevronRight } from "lucide-react"
 
 const Customers = () => {
   const [list, setList] = useState<ICustomerListItem[]>([]);
@@ -14,9 +15,8 @@ const Customers = () => {
     const fetchCustomers = async () => {
       showLoader();
       try {
-        const customers = await CustomerService.getCustomers();
-        console.log('customers', customers);
-        setList(customers.customers);
+        const { customers } = await CustomerService.getCustomers();
+        setList(customers);
       } catch (error) {
         console.error('Erro ao buscar clientes:', error);
       }
@@ -36,18 +36,19 @@ const Customers = () => {
       }
     >
       {list.length > 0 ? (
-          <ul>
-            {list.map((customer) => (
-              <li key={customer.uuid} className="bg-white p-3 shadow-sm rounded-md mb-4">
-                <NavLink to={`/customers/${customer.uuid}`} className="block hover:bg-gray-100 rounded-md p-2">
+        <ul>
+          {list.map((customer) => (
+            <li key={customer.uuid} className="bg-white p-3 shadow-sm rounded-md mb-4">
+              <NavLink to={`/customers/${customer.uuid}`} className="flex justify-between items-center hover:bg-gray-100 rounded-md p-2">
+                <div>
                   <p><strong>Nome:</strong> {customer.name}</p>
-                  {/* <p><strong>Telefone:</strong> {customer.phone}</p> */}
                   <p><strong>Empréstimos:</strong> {customer.loansCount}</p>
-                  {/* <p><strong>Status:</strong> {customer.status}</p> */}
-                </NavLink>
-              </li>
-            ))}
-          </ul>
+                </div>
+                <ChevronRight className="text-secondary" />
+              </NavLink>
+            </li>
+          ))}
+        </ul>
       ) : (<p>Nenhum cliente encontrado</p>)}
       <Outlet />
     </Section>

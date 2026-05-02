@@ -43,7 +43,7 @@ const ButtonNavLink = ({
   return (
     <NavLink
       {...props}
-      className={`${variants[variant]} ${className}`}
+      className={`${className} ${variants[variant]}`}
     >
       {children}
     </NavLink>
