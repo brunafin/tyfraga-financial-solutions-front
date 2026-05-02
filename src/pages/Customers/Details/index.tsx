@@ -12,6 +12,8 @@ import Table from "../../../components/ui/Table";
 import IconButton from "../../../components/ui/ButtonIcon";
 import { Pencil } from "lucide-react";
 import TaxBadge from "../../../components/ui/TaxBadge";
+import formatCentsToRealBRL from "../../../utils/formatCentsToRealBRL";
+import { useLoader } from "../../../contexts/Loader/useLoader";
 
 const schema = z.object({
     name: z.string().min(1, "O nome é obrigatório"),
@@ -23,8 +25,30 @@ const schema = z.object({
 
 type FormData = z.infer<typeof schema>;
 
+interface ICustomerDetail {
+    uuid: string;
+    name: string;
+    phone: string;
+    total_loans: number;
+    amount_loaned: number;
+    amount_received: number;
+    amount_pending_receive: number;
+    amount_interest_loaned: number;
+    average_tax: number;
+    loans:
+    {
+        id: string;
+        tax: number;
+        original_value: number;
+        loan_value: number;
+        status: string;
+    }[];
+}
+
 const Details = () => {
     const { id } = useParams();
+    const { showLoader, hideLoader, loading } = useLoader();
+    const [customer, setCustomer] = useState<ICustomerDetail | null>(null);
     // const navigate = useNavigate();
     const [isEdit, setIsEdit] = useState(false);
     const {
@@ -66,14 +90,18 @@ const Details = () => {
     };
 
     const fetchCustomerById = async () => {
+        showLoader();
         try {
             const customer = await CustomerService.getCustomerById(id!);
             reset({
                 name: customer.name,
                 phone: customer.phone,
             });
+            setCustomer(customer);
         } catch (error) {
             console.error('Erro ao buscar cliente:', error);
+        } finally {
+            hideLoader();
         }
     };
 
@@ -83,20 +111,29 @@ const Details = () => {
         }
     }, [id])
 
+        if(loading){
+            return(
+                <></>
+            )
+        }
+
     return (
         <Section
             title="Detalhes do Cliente"
             action={
                 (isEdit) ? (
-                    <Button variant="primary" onClick={() => onSubmit(watch())}>Salvar</Button>
+                    <div className="flex gap-2">
+                        <Button variant="outline_primary" onClick={() => setIsEdit(false)}>Cancelar</Button>
+                        <Button variant="primary" onClick={() => onSubmit(watch())}>Salvar</Button>
+                    </div>
                 ) : (
-                    <IconButton variant="primary" onClick={() => setIsEdit(true)} icon={<Pencil size={20} />} label="Editar" />
+                    <IconButton variant="primary" onClick={() => setIsEdit(true)} icon={<Pencil size={18} />} label="Editar" />
                 )
 
             }
         >
             {isEdit ? (
-                <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-3 my-4">
+                <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-3 my-4 border-b border-primary/20 pb-4">
                     <div className="w-full md:w-1/2">
                         <InputText
                             label="Nome"
@@ -118,11 +155,48 @@ const Details = () => {
                     </div>
                 </form>
             ) : (
-                <div className="flex items-center justify-between border-b border-primary/20 text-primary">
-                    <h2 className="text-lg">{watch('name')}</h2>
-                    <p>{watch('phone')}</p>
+                <div className="text-primary">
+                    <div className="flex items-center gap-2 mb-3">
+                        <h2 className="text-xl font-bold">{watch('name')}</h2>
+                        <a
+                            href={`https://wa.me/${watch('phone')}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="underline"
+                        >
+                            ({watch('phone')})
+                        </a>
+                    </div>
                 </div>
             )}
+            <ul className="rounded-sm">
+                <li>Empréstimos: {' '}
+                    <strong className="font-bold">{customer?.total_loans}</strong>
+                </li>
+                <li>Valor Emprestado: {' '}
+                    <strong className="font-bold">
+                        {formatCentsToRealBRL(customer?.amount_loaned || 0)}
+                    </strong>
+                </li>
+                <li>Valor Emprestado com juros: {' '}
+                    <strong className="font-bold">
+                        {formatCentsToRealBRL(customer?.amount_interest_loaned || 0)}
+                    </strong>
+                </li>
+                <li>Valor Recebido: {' '}
+                    <strong className="font-bold">
+                        {formatCentsToRealBRL(customer?.amount_received || 0)}
+                    </strong>
+                </li>
+                <li className="flex flex-col p-4 mt-6 border-l-4 border-amber-400 w-full rounded-lg shadow items-center">Valor pendente
+                    <strong className="font-bold">
+                        {formatCentsToRealBRL(customer?.amount_pending_receive || 0)}
+                    </strong>
+                </li>
+                {/* <li className="mt-2">
+                    <TaxBadge tax={customer?.average_tax || 0} taxByCustomer />
+                </li> */}
+            </ul>
 
             {/* 
             <h2 className="mt-8 pt-2 text-primary
@@ -203,18 +277,21 @@ const Details = () => {
             <section className="mt-12 mb-20">
                 <div className="flex items-center justify-between">
                     <h2 className="py-2 text-primary text-lg">Empréstimos</h2>
-                    <TaxBadge tax={20} taxByCustomer />
+                    <TaxBadge tax={customer?.average_tax || 0} taxByCustomer />
                 </div>
                 <Table
                     columns={[
-                        { header: "Número", accessor: "name" },
-                        { header: "Valor emprestado", accessor: "amount_borrowed" },
-                        { header: "Valor cobrado", accessor: "amount_charged" },
-                        { header: "Parcelas restantes", accessor: "installments_missing" },
+                        { header: "ID", accessor: "id" },
+                        { header: "Emprestado", accessor: "original_value" },
+                        { header: "Cobrado", accessor: "loan_value" },
+                        { header: "Status", accessor: "status" },
                     ]}
-                    data={[
-                        { id: 1, name: "1", amount_borrowed: "600,00", amount_charged: "720,00", installments_total: "6", installments_missing: "4" },
-                    ]}
+                    data={customer?.loans.map((item) => ({
+                        id: item.id,
+                        original_value: formatCentsToRealBRL(item.original_value) || "",
+                        loan_value: formatCentsToRealBRL(item.loan_value) || "",
+                        status: item.status,
+                    })) || []}
                 />
             </section>
             {/* <Button variant="destructive" size="full" onClick={handleDelete}>

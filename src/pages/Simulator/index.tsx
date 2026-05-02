@@ -21,6 +21,7 @@ import { formatDateBR } from "../../utils/formatDateBR";
 import { LoanService } from "../../services/loan";
 import IconButton from "../../components/ui/ButtonIcon";
 import { PlusCircle, TrashIcon } from "lucide-react";
+import { useNavigate } from "react-router";
 
 const schema = z.object({
     customer_id: z.string(),
@@ -36,6 +37,7 @@ const schema = z.object({
 type FormData = z.infer<typeof schema>;
 
 const Simulator = () => {
+    const navigate = useNavigate();
     const { showLoader, hideLoader } = useLoader();
     const [customers, setCustomers] = useState<ICustomerListItem[]>([]);
     const [calculationResult, setCalculationResult] = useState<any | null>(null);
@@ -101,6 +103,7 @@ const Simulator = () => {
             showLoader();
             await LoanService.createLoan(obj);
             alert("Empréstimo criado com sucesso!");
+            navigate(`/customers/${data.customer_id}`);
         } catch (error) {
             console.error('Erro ao criar empréstimo:', error);
             alert("Ocorreu um erro ao criar o empréstimo. Por favor, tente novamente.");
@@ -192,7 +195,7 @@ const Simulator = () => {
                             />
                         </div>
                         <div className="mb-2">
-                            <TaxBadge tax={20} taxByCustomer={!!formValues.customer_id} />
+                            <TaxBadge tax={customers.find((item) => item.uuid === watch('customer_id'))?.averageTax || 20} taxByCustomer={!!formValues.customer_id && !!customers.find((item) => item.uuid === watch('customer_id'))?.averageTax} />
                         </div>
                     </div>
                     <div>

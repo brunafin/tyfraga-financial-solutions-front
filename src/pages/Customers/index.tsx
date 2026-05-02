@@ -38,7 +38,7 @@ const Customers = () => {
       {list.length > 0 ? (
         <ul>
           {list.map((customer) => (
-            <li key={customer.uuid} className="bg-white p-3 shadow-sm rounded-md mb-4">
+            <li key={customer.uuid} className="bg-white p-2 shadow-sm rounded-md mb-2">
               <NavLink to={`/customers/${customer.uuid}`} className="flex justify-between items-center hover:bg-gray-100 rounded-md p-2">
                 <div>
                   <p><strong>Nome:</strong> {customer.name}</p>

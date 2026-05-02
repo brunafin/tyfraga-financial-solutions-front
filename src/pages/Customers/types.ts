@@ -6,5 +6,6 @@ export interface ICustomerListItem {
     name: string;
     phone: string;
     loansCount: number;
+    averageTax: number;
     status: boolean;
 }

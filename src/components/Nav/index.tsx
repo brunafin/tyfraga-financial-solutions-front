@@ -1,4 +1,4 @@
-import { Calculator, User } from "lucide-react"
+import { BanknoteArrowUp, Calculator, User } from "lucide-react"
 import { NavLink, useLocation } from "react-router"
 
 const Nav = () => {
@@ -17,18 +17,18 @@ const Nav = () => {
                     </NavLink>
                 </li>
                 {/* <li>
-                    <NavLink to="/loans" className={`hover:bg-secondary hover:rounded-md p-3 flex justify-center ${routeLocation === '/loans' ? 'bg-secondary rounded-md' : ''}`}>
-                        <BanknoteArrowUp className="text-white w-6" />
-                    </NavLink>
-                </li>
-                <li>
                     <NavLink to="/payments" className={`hover:bg-secondary hover:rounded-md p-3 flex justify-center ${routeLocation === '/payments' ? 'bg-secondary rounded-md' : ''}`}>
-                        <HandCoins className="text-white w-6" />
+                    <HandCoins className="text-white w-6" />
                     </NavLink>
-                </li> */}
+                    </li> */}
                 <li>
                     <NavLink to="/customers" className={`hover:bg-secondary hover:rounded-md p-3 flex justify-center ${routeLocation === '/customers' ? 'bg-secondary rounded-md' : ''}`}>
                         <User className="text-white w-6" />
+                    </NavLink>
+                </li>
+                <li>
+                    <NavLink to="/loans" className={`hover:bg-secondary hover:rounded-md p-3 flex justify-center ${routeLocation === '/loans' ? 'bg-secondary rounded-md' : ''}`}>
+                        <BanknoteArrowUp className="text-white w-6" />
                     </NavLink>
                 </li>
                 {/* <li>
