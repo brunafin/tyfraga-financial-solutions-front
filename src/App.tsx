@@ -10,6 +10,7 @@ import Simulator from "./pages/Simulator"
 import { LoaderProvider } from "./contexts/Loader/LoaderProvider"
 import UiComponents from "./pages/Config/UiComponents"
 import Config from "./pages/Config"
+import LoanDetails from "./pages/Loan"
 
 function App() {
 
@@ -29,9 +30,9 @@ function App() {
               <Route path=":id" element={<Details />} />
             </Route>
             <Route path="simulator" element={<Simulator />} />
-            <Route path="loans" element={<NotDevelopment />}>
-              <Route path=":id" element={<NotDevelopment />} />
-            </Route>
+            {/* <Route path="loans" element={<NotDevelopment />}> */}
+              <Route path="loans/:id" element={<LoanDetails />} />
+            {/* </Route> */}
             <Route path="payments" element={<NotDevelopment />} />
             <Route path="config" element={<Config />} />
             <Route path="config/ui" element={<UiComponents />} />

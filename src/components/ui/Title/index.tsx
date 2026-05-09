@@ -1,6 +1,6 @@
-const Title = ({ children }: { children: React.ReactNode }) => {
+const Title = ({ children, className = '' }: { children: React.ReactNode, className?: string }) => {
   return (
-    <h1 className="text-primary/80 mb-4">{children}</h1>
+    <h1 className={`${className}`}>{children}</h1>
   );
 };
 

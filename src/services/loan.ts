@@ -19,10 +19,10 @@ export const LoanService = {
     //     return response.data;
     // },
 
-    // async getLoanById(id: string){
-    //     const response = await api.get(`/loans/${id}`);
-    //     return response.data;
-    // },
+    async getLoanById(id: string){
+        const response = await api.get(`/loans/${id}`);
+        return response.data;
+    },
 
     // async updateLoan(id: string, data: {
     //     name: string;
@@ -36,4 +36,8 @@ export const LoanService = {
     //     const response = await api.delete(`/loans/${id}`);
     //     return response.data;
     // }
+
+    async checkPayDate(installmentId: number){
+        await api.patch(`/payments/${installmentId}/pay`);
+    }
 }

@@ -5,6 +5,7 @@ const NotDevelopment = () => {
     <Section title="Em Desenvolvimento">
       <p className="text-lg text-gray-600">Estamos trabalhando para trazer esta funcionalidade em breve!</p>
     </Section>
+    
   );
 }
 

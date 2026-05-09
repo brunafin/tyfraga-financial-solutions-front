@@ -9,7 +9,7 @@ import Button from "../../../components/ui/Button";
 import InputText from "../../../components/ui/Input/InputText";
 import InputPhone from "../../../components/ui/Input/InputPhone";
 import IconButton from "../../../components/ui/ButtonIcon";
-import { Check, ChevronRight, Clock, Pencil } from "lucide-react";
+import { ChevronRight, Pencil } from "lucide-react";
 import TaxBadge from "../../../components/ui/TaxBadge";
 import formatCentsToRealBRL from "../../../utils/formatCentsToRealBRL";
 import { useLoader } from "../../../contexts/Loader/useLoader";
@@ -43,7 +43,7 @@ interface ICustomerDetail {
         tax: number;
         // original_value: number;
         loan_value: number;
-        status: boolean;
+        status: 'paid' | 'pending' | 'overdue';
     }[];
 }
 
@@ -119,20 +119,23 @@ const Details = () => {
         )
     }
 
+    const getLoanStatus = (status: 'paid' | 'pending' | 'overdue') => {
+        switch (status) {
+            case 'paid':
+                return 'border-l-4 border-green-600';
+            case 'overdue':
+                return 'border-l-4 border-red-600';
+            case 'pending':
+                return 'border-l-4 border-amber-500';
+            default:
+                return '';
+        }
+    }
+
     return (
         <Section
             title="Detalhes do Cliente"
-            action={
-                (isEdit) ? (
-                    <div className="flex gap-2">
-                        <Button variant="outline_primary" onClick={() => setIsEdit(false)}>Cancelar</Button>
-                        <Button variant="primary" onClick={() => onSubmit(watch())}>Salvar</Button>
-                    </div>
-                ) : (
-                    <IconButton variant="primary" onClick={() => setIsEdit(true)} icon={<Pencil size={18} />} label="Editar" />
-                )
-
-            }
+            goBack
         >
             {isEdit ? (
                 <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-3 my-4 border-b border-primary/20 pb-4">
@@ -155,10 +158,20 @@ const Details = () => {
                             errors={errors}
                         />
                     </div>
+                    <div className="flex gap-2">
+                        <Button variant="outline_primary" onClick={() => {
+                            reset({
+                                name: customer?.name || "",
+                                phone: customer?.phone || "",
+                            });
+                            setIsEdit(false)
+                        }}>Cancelar</Button>
+                        <Button variant="primary" type="submit">Salvar</Button>
+                    </div>
                 </form>
             ) : (
-                <div className="text-primary">
-                    <div className="flex items-center gap-2 mb-3">
+                <div className="text-primary flex items-center justify-between w-fulljustify-between w-full">
+                    <div className="flex items-center gap-2">
                         <h2 className="text-xl font-bold">{watch('name')}</h2>
                         <a
                             href={`https://wa.me/+55${watch('phone')}`}
@@ -169,9 +182,16 @@ const Details = () => {
                             ({watch('phone')})
                         </a>
                     </div>
+                    {
+                        !isEdit && (
+
+                            <IconButton variant="primary" onClick={() => setIsEdit(true)} icon={<Pencil size={18} />} label="Editar" />
+                        )
+
+                    }
                 </div>
             )}
-            <ul className="text-sm">
+            <ul>
                 <li>Total Emprestado: {' '}
 
                     {formatCentsToRealBRL(customer?.amount_loaned || 0)}
@@ -190,10 +210,12 @@ const Details = () => {
                 <li>Total lucro: {' '}
                     {formatCentsToRealBRL(customer?.profit || 0)}
                 </li>
-                <li className="flex flex-col p-3 mt-3 w-full rounded-lg bg-secondary/10 items-center">Valor pendente
-                    <strong>{formatCentsToRealBRL(customer?.amount_pending_receive || 0)}</strong>
-                    <span className="text-sm">{formatCentsToRealBRL(customer?.profit_pending || 0)} (lucro)</span>
-                </li>
+                {customer?.amount_pending_receive !== 0 && (
+                    <li className="flex flex-col p-3 mt-3 w-full rounded-lg bg-white items-center">Valor pendente
+                        <strong>{formatCentsToRealBRL(customer?.amount_pending_receive || 0)}</strong>
+                        <span className="text-sm">{formatCentsToRealBRL(customer?.profit_pending || 0)} (lucro)</span>
+                    </li>
+                )}
                 {/* <li className="mt-2">
                     <TaxBadge tax={customer?.average_tax || 0} taxByCustomer />
                 </li> */}
@@ -300,9 +322,9 @@ const Details = () => {
                 /> */}
                 <ul>
                     {customer?.loans.map((loan) => (
-                        <li key={loan.uuid} className={`${loan.status ? '' : 'border-l-4 border-amber-500'} bg-white p-2 shadow-sm rounded-md mb-2`}>
+                        <li key={loan.uuid} className={`${getLoanStatus(loan.status)} bg-white p-2 shadow-sm rounded-md mb-2`}>
                             <NavLink to={`/loans/${loan.uuid}`} className="flex justify-between items-center text-primary/90 rounded-md p-2">
-                                {loan.status ? <Check className="text-secondary" size={18} /> : <Clock className="text-primary/80" size={18} />}
+                                {/* {loan.status ? <Check className="text-secondary" size={18} /> : <Clock className="text-primary/80" size={18} />} */}
                                 {formatCentsToRealBRL(loan.loan_value)}
                                 <ChevronRight className="text-primary/50" />
                             </NavLink>

@@ -29,25 +29,25 @@ const Customers = () => {
   return (
     <Section
       title="Clientes"
-      action={
-        <ButtonLink to="/customers/create">
-          Novo cliente
-        </ButtonLink>
-      }
     >
       {list.length > 0 ? (
         <>
-        <p className="text-sm text-primary/80 border-b border-primary/10 mb-3">{list.length} clientes encontrados</p>
-        <ul>
-          {list.map((customer) => (
-            <li key={customer.uuid} className="bg-white p-2 shadow-sm rounded-md mb-2">
-              <NavLink to={`/customers/${customer.uuid}`} className="flex justify-between items-center text-primary/90 rounded-md p-2">
-                {customer.name}
-                <ChevronRight className="text-primary/50" />
-              </NavLink>
-            </li>
-          ))}
-        </ul>
+          {/* <p className="text-sm text-primary/80 border-b border-primary/10 mb-3">{list.length} clientes encontrados</p> */}
+          <div className="flex justify-end mb-2">
+          <ButtonLink to="/customers/create">
+            Novo cliente
+          </ButtonLink>
+          </div>
+          <ul>
+            {list.map((customer) => (
+              <li key={customer.uuid} className="bg-white p-2 shadow-sm rounded-md mb-2">
+                <NavLink to={`/customers/${customer.uuid}`} className="flex justify-between items-center text-primary/90 rounded-md p-2">
+                  {customer.name}
+                  <ChevronRight className="text-primary/50" />
+                </NavLink>
+              </li>
+            ))}
+          </ul>
         </>
       ) : (<p>Nenhum cliente encontrado</p>)}
       <Outlet />
