@@ -107,7 +107,7 @@ const LoanDetails = () => {
                 </ul>
                 <ol>
                     {loan?.payments?.map(installment => (
-                        <li key={installment.id} className={`mt-4 rounded-lg py-2 px-4 ${paymentStatus(installment.dueDate, installment.payedDate)}`}>
+                        <li key={installment.id} className={`mt-4 rounded-lg py-2 bg-white px-4 ${paymentStatus(installment.dueDate, installment.payedDate)}`}>
                             <p>Parcela {installment.installmentRef}</p>
                             <p>Valor: {formatCentsToRealBRL(installment.installmentValue)}</p>
                             <p>Data de vencimento: {new Date(installment.dueDate).toLocaleDateString()}</p>

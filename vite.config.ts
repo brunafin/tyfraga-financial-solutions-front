@@ -18,9 +18,9 @@ export default defineConfig({
       },
 
       manifest: {
-        name: 'Tyfraga',
-        short_name: 'Tyfraga',
-        description: 'Aplicativo Tyfraga',
+        name: 'Turcoin',
+        short_name: 'Turcoin',
+        description: 'Aplicativo Turcoin',
 
         theme_color: '#ffffff',
         background_color: '#ffffff',

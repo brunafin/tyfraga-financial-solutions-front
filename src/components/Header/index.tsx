@@ -48,7 +48,7 @@ const Header = () => {
     }
 
     return (
-        <header className="bg-white flex justify-between items-center h-[10vh] p-3">
+        <header className={`${showInstall ? 'justify-between' : 'justify-center'} bg-white flex items-center h-[10vh] p-3`}>
             <NavLink to="/" className='flex items-center gap-2'>
                 <img src={LogoFull} title="Logo Turcoin" alt="Logo Turcoin" />
             </NavLink>
