@@ -13,7 +13,6 @@ import { ChevronRight, Pencil } from "lucide-react";
 import TaxBadge from "../../../components/ui/TaxBadge";
 import formatCentsToRealBRL from "../../../utils/formatCentsToRealBRL";
 import { useLoader } from "../../../contexts/Loader/useLoader";
-import { formatDateBR } from "../../../utils/formatDateBR";
 import { formatDateTimeBR } from "../../../utils/formatDateTimetoBr";
 
 const schema = z.object({
