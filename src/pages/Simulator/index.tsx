@@ -112,8 +112,6 @@ const Simulator = () => {
 
             await LoanService.createLoan(obj);
 
-            alert("Empréstimo criado com sucesso!");
-
             navigate(`/customers/${data.customer_id}`);
         } catch (error) {
             console.error("Erro ao criar empréstimo:", error);

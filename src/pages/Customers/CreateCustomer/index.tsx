@@ -36,7 +36,6 @@ const CreateCustomer = () => {
         name: data.name,
         phone: data.phone,
       });
-      alert("Cliente criado com sucesso!");
       navigate("/customers");
     } catch (error) {
       console.error('Erro ao criar cliente:', error);

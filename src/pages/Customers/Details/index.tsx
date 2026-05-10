@@ -13,6 +13,8 @@ import { ChevronRight, Pencil } from "lucide-react";
 import TaxBadge from "../../../components/ui/TaxBadge";
 import formatCentsToRealBRL from "../../../utils/formatCentsToRealBRL";
 import { useLoader } from "../../../contexts/Loader/useLoader";
+import { formatDateBR } from "../../../utils/formatDateBR";
+import { formatDateTimeBR } from "../../../utils/formatDateTimetoBr";
 
 const schema = z.object({
     name: z.string().min(1, "O nome é obrigatório"),
@@ -43,6 +45,7 @@ interface ICustomerDetail {
         tax: number;
         // original_value: number;
         loan_value: number;
+        loan_date: string;
         status: 'paid' | 'pending' | 'overdue';
     }[];
 }
@@ -82,7 +85,6 @@ const Details = () => {
                 name: data.name,
                 phone: data.phone,
             });
-            alert("Cliente atualizado com sucesso!");
             fetchCustomerById();
             setIsEdit(false);
         } catch (error) {
@@ -191,118 +193,43 @@ const Details = () => {
                     }
                 </div>
             )}
-            <ul>
-                <li>Total Emprestado: {' '}
+            {customer?.amount_loaned !== 0 ? (
+                <>
+                    <ul className="mt-4">
+                        <li>Total Emprestado: {' '}
 
-                    {formatCentsToRealBRL(customer?.amount_loaned || 0)}
+                            {formatCentsToRealBRL(customer?.amount_loaned || 0)}
 
-                </li>
-                <li>Total com juros: {' '}
+                        </li>
+                        <li>Total com juros: {' '}
 
-                    {formatCentsToRealBRL(customer?.amount_interest_loaned || 0)}
+                            {formatCentsToRealBRL(customer?.amount_interest_loaned || 0)}
 
-                </li>
-                <li className="mt-2">Total Recebido: {' '}
+                        </li>
+                        <li className="mt-2">Total Recebido: {' '}
 
-                    {formatCentsToRealBRL(customer?.amount_received || 0)}
+                            {formatCentsToRealBRL(customer?.amount_received || 0)}
 
-                </li>
-                <li>Total lucro: {' '}
-                    {formatCentsToRealBRL(customer?.profit || 0)}
-                </li>
-                {customer?.amount_pending_receive !== 0 && (
-                    <li className="flex flex-col p-3 mt-3 w-full rounded-lg bg-white items-center">Valor pendente
-                        <strong>{formatCentsToRealBRL(customer?.amount_pending_receive || 0)}</strong>
-                        <span className="text-sm">{formatCentsToRealBRL(customer?.profit_pending || 0)} (lucro)</span>
-                    </li>
-                )}
-                {/* <li className="mt-2">
+                        </li>
+                        <li>Total lucro: {' '}
+                            {formatCentsToRealBRL(customer?.profit || 0)}
+                        </li>
+                        {customer?.amount_pending_receive !== 0 && (
+                            <li className="flex flex-col p-3 mt-3 w-full rounded-lg bg-white items-center">Valor pendente
+                                <strong>{formatCentsToRealBRL(customer?.amount_pending_receive || 0)}</strong>
+                                <span className="text-sm">{formatCentsToRealBRL(customer?.profit_pending || 0)} (lucro)</span>
+                            </li>
+                        )}
+                        {/* <li className="mt-2">
                     <TaxBadge tax={customer?.average_tax || 0} taxByCustomer />
                 </li> */}
-            </ul>
-
-            {/* 
-            <h2 className="mt-8 pt-2 text-primary
-             text-lg border-t border-primary/20">
-                Histórico de pagamentos
-            </h2> */}
-            {/* <div className="mt-8">
-                <Accordion
-                    header={
-                        <div className="flex justify-between items-center w-full">
-                            <div className="flex gap-6">
-                                <span>24/04/2026</span>
-                                <span className="font-medium">R$ 1.000,00</span>
-                            </div>
-
-                            <span className="text-sm text-gray-500">Em dia</span>
+                    </ul>
+                    <section className="mt-12 mb-20">
+                        <div className="flex items-center justify-between">
+                            <h2 className="py-2 text-primary text-lg">Empréstimos</h2>
+                            <TaxBadge tax={customer?.average_tax || 0} taxByCustomer />
                         </div>
-                    }
-                >
-                    <div className="flex flex-col gap-3">
-                        <div className="flex justify-end">
-                            <ButtonNavLink to="/loans/1" variant="link_primary">
-                                Ver detalhes do empréstimo
-                            </ButtonNavLink>
-                        </div>
-                        <div className=" flex flex-col bg-secondary/20 rounded-sm p-2">
-                            <p>Taxa média mensal: 20%</p>
-                            <p>Tempo:26 dias</p>
-                            <p>Observação: cobrar sempre na segunda-feira</p>
-                        </div>
-                        <Table
-                            columns={[
-                                { header: "Parcela", accessor: "name" },
-                                { header: "Valor", accessor: "price" },
-                                { header: "Data vencimento", accessor: "dueDate" },
-                                { header: "Data pagamento", accessor: "paymentDate" },
-                                { header: "Status", accessor: "status" },
-                            ]}
-                            data={[
-                                { id: 1, name: "1", price: "600,00", dueDate: "01/05/2026", paymentDate: "30/04/2026", status: "Pago" },
-                                { id: 2, name: "2", price: "600,00", dueDate: "01/06/2026", paymentDate: "30/05/2026", status: "Pendente" },
-                                { id: 2, name: "2", price: "600,00", dueDate: "01/06/2026", paymentDate: "30/05/2026", status: "Pendente" },
-                                { id: 2, name: "2", price: "600,00", dueDate: "01/06/2026", paymentDate: "30/05/2026", status: "Pendente" },
-                                { id: 2, name: "2", price: "600,00", dueDate: "01/06/2026", paymentDate: "30/05/2026", status: "Pendente" },
-                                { id: 2, name: "2", price: "600,00", dueDate: "01/06/2026", paymentDate: "30/05/2026", status: "Pendente" },
-                                { id: 2, name: "2", price: "600,00", dueDate: "01/06/2026", paymentDate: "30/05/2026", status: "Pendente" },
-                            ]}
-                        />
-                    </div>
-                </Accordion>
-            </div> */}
-            {/* <div className="mt-4">
-                <div className="flex flex-col gap-3"> */}
-            {/* <div className=" flex flex-col bg-secondary/20 rounded-sm p-2">
-                            <p>Taxa média mensal: 20%</p>
-                            <p>Tempo:26 dias</p>
-                            <p>Observação: cobrar sempre na segunda-feira</p>
-                        </div> */}
-
-            {/* Aqui entra sua tabela */}
-            {/* <Table
-                        columns={[
-                            { header: "Parcela", accessor: "name" },
-                            { header: "Valor", accessor: "price" },
-                            { header: "Data vencimento", accessor: "dueDate" },
-                            { header: "Data pagamento", accessor: "paymentDate" },
-                        ]}
-                        data={[
-                            { id: 1, name: "1", price: "600,00", dueDate: "01/05/2026", paymentDate: "30/04/2026" },
-                            { id: 1, name: "1", price: "600,00", dueDate: "01/05/2026", paymentDate: "30/04/2026" },
-                            { id: 1, name: "1", price: "600,00", dueDate: "01/05/2026", paymentDate: "30/04/2026" },
-                            { id: 1, name: "1", price: "600,00", dueDate: "01/05/2026", paymentDate: "30/04/2026" },
-                            { id: 1, name: "1", price: "600,00", dueDate: "01/05/2026", paymentDate: "30/04/2026" },
-                        ]}
-                    />
-                </div>
-            </div> */}
-            <section className="mt-12 mb-20">
-                <div className="flex items-center justify-between">
-                    <h2 className="py-2 text-primary text-lg">Empréstimos</h2>
-                    <TaxBadge tax={customer?.average_tax || 0} taxByCustomer />
-                </div>
-                {/* <Table
+                        {/* <Table
                     columns={[
                         { header: "ID", accessor: "id" },
                         { header: "Emprestado", accessor: "original_value" },
@@ -320,18 +247,22 @@ const Details = () => {
                         status: item.status,
                     })) || []}
                 /> */}
-                <ul>
-                    {customer?.loans.map((loan) => (
-                        <li key={loan.uuid} className={`${getLoanStatus(loan.status)} bg-white p-2 shadow-sm rounded-md mb-2`}>
-                            <NavLink to={`/loans/${loan.uuid}`} className="flex justify-between items-center text-primary/90 rounded-md p-2">
-                                {/* {loan.status ? <Check className="text-secondary" size={18} /> : <Clock className="text-primary/80" size={18} />} */}
-                                {formatCentsToRealBRL(loan.loan_value)}
-                                <ChevronRight className="text-primary/50" />
-                            </NavLink>
-                        </li>
-                    ))}
-                </ul>
-            </section>
+                        <ul>
+                            {customer?.loans.map((loan) => (
+                                <li key={loan.uuid} className={`${getLoanStatus(loan.status)} bg-white p-2 shadow-sm rounded-md mb-2`}>
+                                    <NavLink to={`/loans/${loan.uuid}`} className="flex justify-between items-center text-primary/90 rounded-md p-2">
+                                        {/* {loan.status ? <Check className="text-secondary" size={18} /> : <Clock className="text-primary/80" size={18} />} */}
+                                        {formatDateTimeBR(loan.loan_date)} - {formatCentsToRealBRL(loan.loan_value)}
+                                        <ChevronRight className="text-primary/50" />
+                                    </NavLink>
+                                </li>
+                            ))}
+                        </ul>
+                    </section>
+                </>
+            ) : (
+                <p className="py-4 px-2">Nenhum valor emprestado.</p>
+            )}
             {/* <Button variant="destructive" size="full" onClick={handleDelete}>
                 Excluir cliente
             </Button> */}
