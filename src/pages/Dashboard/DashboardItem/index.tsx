@@ -1,15 +1,15 @@
-import formatToCurrencyBRL from "../../../utils/formatToCurrencyBRL";
-
 interface DashboardItemProps {
     title: string;
-    value: number;
+    value: string | number;
+    alignCenter?: boolean;
+    smallText?: boolean;
 }
 
-const DashboardItem = ({title, value}: DashboardItemProps) => {
+const DashboardItem = ({title, value, alignCenter = false, smallText = false}: DashboardItemProps) => {
   return (
-    <div className="p-4 bg-gray-50 rounded shadow">
-      <h3 className="text-lg font-bold text-gray-800">{title}</h3>
-      <p className="text-gray-700">{formatToCurrencyBRL(value)}</p>
+    <div className={`${alignCenter && 'text-center'} p-4 bg-gray-50 rounded shadow flex-1`}>
+      <h3 className={`${smallText ? 'text-lg' : 'text-2xl'} font-bold text-primary/80`}>{title}</h3>
+      <p className="text-primary/70">{value}</p>
     </div>
   )
 }

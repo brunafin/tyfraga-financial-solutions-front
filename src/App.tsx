@@ -11,6 +11,7 @@ import { LoaderProvider } from "./contexts/Loader/LoaderProvider"
 import UiComponents from "./pages/Config/UiComponents"
 import Config from "./pages/Config"
 import LoanDetails from "./pages/Loan"
+import Dashboard from "./pages/Dashboard"
 
 function App() {
 
@@ -23,7 +24,7 @@ function App() {
         <div>
           <Routes>
             {/* <Route index path="/" element={<Dashboard />} /> */}
-            <Route index path="/" element={<Simulator />} />
+            <Route index path="/" element={<Dashboard />} />
             <Route path="/customers">
               <Route index element={<Customers />} />
               <Route path="create" element={<CreateCustomer />} />

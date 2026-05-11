@@ -1,4 +1,4 @@
-import { Calculator, User } from "lucide-react"
+import { Calculator, ChartLine, User } from "lucide-react"
 import { NavLink, useLocation } from "react-router"
 
 const Nav = () => {
@@ -6,11 +6,11 @@ const Nav = () => {
     return (
         <nav className="bg-primary bottom-0 fixed w-full md:w-20 h-20 md:h-full p-3">
             <ul className="flex md:flex-col gap-6 justify-around">
-                {/* <li>
+                <li>
                     <NavLink to="/" className={`hover:bg-secondary hover:rounded-md p-3 flex justify-center ${routeLocation === '/' ? 'bg-secondary rounded-md' : ''}`}>
                         <ChartLine className="text-white w-6" />
                     </NavLink>
-                </li> */}
+                </li>
                 <li>
                     <NavLink to="/simulator" className={`hover:bg-secondary hover:rounded-md p-3 flex justify-center ${routeLocation === '/simulator' ? 'bg-secondary rounded-md' : ''}`}>
                         <Calculator className="text-white w-6" />
