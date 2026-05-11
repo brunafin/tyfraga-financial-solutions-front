@@ -50,7 +50,7 @@ const Header = () => {
     return (
         <header className={`${showInstall ? 'justify-between' : 'justify-center'} bg-white flex items-center h-[10vh] p-3`}>
             <NavLink to="/" className='flex items-center gap-2'>
-                <img src={LogoFull} title="Logo Turcoin" alt="Logo Turcoin" />
+                <img src={LogoFull} title="Logo Turcoin" alt="Logo Turcoin" className="md:ms-20"/>
             </NavLink>
             {showInstall && (
                 <Button variant="outline_primary" className="text-sm" onClick={handleInstall}>
