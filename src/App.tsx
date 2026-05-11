@@ -12,6 +12,7 @@ import UiComponents from "./pages/Config/UiComponents"
 import Config from "./pages/Config"
 import LoanDetails from "./pages/Loan"
 import Dashboard from "./pages/Dashboard"
+import Timeline from "./pages/Timeline"
 
 function App() {
 
@@ -37,6 +38,7 @@ function App() {
             <Route path="payments" element={<NotDevelopment />} />
             <Route path="config" element={<Config />} />
             <Route path="config/ui" element={<UiComponents />} />
+            <Route path="timeline" element={<Timeline />} />
           </Routes>
         </div>
         </div>
