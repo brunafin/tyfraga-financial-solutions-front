@@ -7,7 +7,7 @@ export const DashboardService = {
     },
 
     async getTimeline({ limit }: { limit?: number }) {
-        const response = await api.get(`/timeline?limit=${limit || 5}`);
+        const response = await api.get(`/timeline?limit=${limit}`);
         return response.data;
     },
 

@@ -20,7 +20,7 @@ interface IInfo {
   customersOverdue: ITimelineItem[];
 }
 
-interface ITimelineItem {
+export interface ITimelineItem {
   id: number;
   type: 'loan' | 'payment';
   amount: number;
