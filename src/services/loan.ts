@@ -32,10 +32,10 @@ export const LoanService = {
     //     return response.data;
     // },
 
-    // async deleteLoan(id: string){
-    //     const response = await api.delete(`/loans/${id}`);
-    //     return response.data;
-    // }
+    async deleteLoan(id: string){
+        const response = await api.delete(`/loans/${id}`);
+        return response.data;
+    },
 
     async checkPayDate(installmentId: number){
         await api.patch(`/payments/${installmentId}/pay`);

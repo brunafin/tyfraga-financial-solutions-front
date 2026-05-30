@@ -47,6 +47,20 @@ const LoanDetails = () => {
         }
     }, [id])
 
+    const handleDeleteLoan = async (loanId: string) => {
+        showLoader();
+        try {
+            await LoanService.deleteLoan(loanId);
+            alert('Empréstimo excluído com sucesso!');
+            window.history.back();
+        } catch (error) {
+            console.error('Erro ao excluir empréstimo:', error);
+            alert('Ocorreu um erro ao excluir o empréstimo. Tente novamente.');
+        } finally {
+            hideLoader();
+        }
+    };
+
     if (loading) {
         return (
             <></>
@@ -87,10 +101,11 @@ const LoanDetails = () => {
             goBack
         >
             <div className="text-primary">
-                <div className="flex items-center gap-2 mb-3">
+                {/* <div className="flex items-center gap-2 mb-3">
                     <h2 className="text-xl font-bold">Empréstimo nuḿero {loan?.uuid}</h2>
-                </div>
+                </div> */}
                 <ul>
+                    <li>Data do empréstimo: {new Date(loan?.loanDate || '').toLocaleDateString()}</li>
                     <li>Total Emprestado: {' '}
 
                         {formatCentsToRealBRL(loan?.originalValue || 0)}
@@ -122,6 +137,18 @@ const LoanDetails = () => {
                         </li>
                     ))}
                 </ol>
+            </div>
+            <div className="mt-6 flex gap-2">
+                <Button 
+                    variant="destructive" 
+                    onClick={() => {
+                        if (window.confirm('Tem certeza que deseja excluir este empréstimo?')) {
+                            handleDeleteLoan(id!);
+                        }
+                    }}
+                >
+                    Excluir Empréstimo
+                </Button>
             </div>
         </Section>
     )
