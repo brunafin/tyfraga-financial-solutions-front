@@ -22,7 +22,7 @@ export default defineConfig({
         short_name: 'Turcoin',
         description: 'Aplicativo Turcoin',
 
-        theme_color: '#ffffff',
+        theme_color: '#3F1B4C',
         background_color: '#ffffff',
 
         display: 'standalone',

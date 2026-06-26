@@ -17,7 +17,7 @@ const IconButton = ({
 
   const variants = {
     primary:
-      "text-primary hover:bg-primary/90 hover:text-white focus:ring-primary",
+      "text-text hover:bg-primary/90 hover:text-white focus:ring-primary",
     destructive:
       "text-red-700 hover:bg-red-700 hover:text-white focus:ring-red-600",
   };

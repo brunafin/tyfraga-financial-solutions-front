@@ -264,17 +264,17 @@ const UiComponents = () => {
                                 <span className="font-medium">R$ 1.000,00</span>
                             </div>
 
-                            <span className="text-sm text-gray-500">Em dia</span>
+                            <span className="text-sm text-text/60">Em dia</span>
                         </div>
                     }
                 >
                     <div className="flex flex-col gap-3">
-                        <div className="text-sm text-gray-600">
+                        <div className="text-sm text-text/70">
                             <strong>Taxa média mensal:</strong> 20% &nbsp;
                             <strong>Tempo:</strong> 26 dias
                         </div>
 
-                        <div className="text-sm text-gray-600">
+                        <div className="text-sm text-text/70">
                             <strong>Observação:</strong> cobrar sempre na segunda-feira
                         </div>
 

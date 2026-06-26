@@ -16,25 +16,26 @@ const InputDate = ({ label, name, register, errors, watch, disabled }: InputDate
     };
 
     return (
-        <label className={`flex flex-col gap-1 ${disabled ? "opacity-50" : ""}`}>
-            {label}
+        <label className={`flex w-full flex-col gap-2 ${disabled ? "opacity-50" : ""}`}>
+            <span className="input-label">{label}</span>
 
             <input
                 type="date"
+                data-form-field
                 disabled={disabled}
                 {...register(name)}
-                className="border border-gray-400 rounded-md p-2 focus:outline-none focus:ring-1 focus:ring-primary disabled:cursor-not-allowed"
+                className="input-field"
             />
 
             {/* Exibição em formato brasileiro */}
             {value && (
-                <span className="text-gray-500 text-sm">
+                <span className="text-text/60 text-sm">
                     Data: {formatToBR(value)}
                 </span>
             )}
 
             {errors?.[name] && (
-                <span className="text-red-500 text-sm">
+                <span className="input-error">
                     {errors[name].message}
                 </span>
             )}

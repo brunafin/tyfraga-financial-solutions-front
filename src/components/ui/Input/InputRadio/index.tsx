@@ -25,25 +25,28 @@ const InputRadio = ({
     disabled = false,
 }: InputRadioProps) => {
     return (
-        <div className="flex flex-col gap-2">
-            <span className={`${disabled ? "opacity-50" : ""}`}>{label}</span>
+        <div className="flex w-full flex-col gap-3">
+            <span className={`input-label ${disabled ? "opacity-50" : ""}`}>{label}</span>
 
             <Controller
                 name={name}
                 control={control}
                 render={({ field }) => (
-                    <div className={`flex flex-col gap-1 ${inline ? "flex-row gap-8" : ""} ${disabled ? "opacity-50" : ""}`}>
+                    <div className={`flex flex-col gap-3 ${inline ? "sm:flex-row sm:gap-6" : ""} ${disabled ? "opacity-50" : ""}`}>
                         {options.map((option) => (
-                            <label key={option.value} className="flex items-center gap-2">
+                            <label
+                                key={option.value}
+                                className="flex min-h-12 items-center gap-3 rounded-xl border border-primary/15 bg-white px-4 py-3 shadow-sm has-[:checked]:border-primary has-[:checked]:ring-2 has-[:checked]:ring-primary/15"
+                            >
                                 <input
                                     type="radio"
                                     value={option.value}
                                     checked={field.value === option.value}
                                     onChange={() => field.onChange(option.value)}
-                                    className={`accent-primary disabled:cursor-not-allowed`}
+                                    className="h-5 w-5 accent-primary disabled:cursor-not-allowed"
                                     disabled={disabled}
                                 />
-                                {option.label}
+                                <span className="text-base text-text">{option.label}</span>
                             </label>
                         ))}
                     </div>
@@ -51,7 +54,7 @@ const InputRadio = ({
             />
 
             {errors?.[name] && (
-                <span className="text-red-500 text-sm">
+                <span className="input-error">
                     {errors[name].message}
                 </span>
             )}

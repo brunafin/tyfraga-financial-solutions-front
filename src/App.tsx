@@ -1,49 +1,60 @@
-import { Route, Routes } from "react-router"
+import { Outlet, Route, Routes } from "react-router"
 import Header from "./components/Header"
 import Nav from "./components/Nav"
-// import Dashboard from "./pages/Dashboard"
+import ProtectedRoute from "./components/ProtectedRoute"
 import Customers from "./pages/Customers"
 import CreateCustomer from "./pages/Customers/CreateCustomer"
 import Details from "./pages/Customers/Details"
 import NotDevelopment from "./pages/NotDevelopment"
 import Simulator from "./pages/Simulator"
 import { LoaderProvider } from "./contexts/Loader/LoaderProvider"
+import { AuthProvider } from "./contexts/Auth/AuthProvider"
 import UiComponents from "./pages/Config/UiComponents"
 import Config from "./pages/Config"
 import LoanDetails from "./pages/Loan"
 import Dashboard from "./pages/Dashboard"
 import Timeline from "./pages/Timeline"
+import Login from "./pages/Login"
 
-function App() {
-
+function AppLayout() {
   return (
-    <LoaderProvider>
-      <div className="max-h-dvh overflow-y-auto">
-        <Header />
-        <div>
+    <div className="max-h-dvh overflow-y-auto">
+      <Header />
+      <div>
         <Nav />
         <div>
-          <Routes>
-            {/* <Route index path="/" element={<Dashboard />} /> */}
-            <Route index path="/" element={<Dashboard />} />
-            <Route path="/customers">
-              <Route index element={<Customers />} />
-              <Route path="create" element={<CreateCustomer />} />
-              <Route path=":id" element={<Details />} />
-            </Route>
-            <Route path="simulator" element={<Simulator />} />
-            {/* <Route path="loans" element={<NotDevelopment />}> */}
-              <Route path="loans/:id" element={<LoanDetails />} />
-            {/* </Route> */}
-            <Route path="payments" element={<NotDevelopment />} />
-            <Route path="config" element={<Config />} />
-            <Route path="config/ui" element={<UiComponents />} />
-            <Route path="timeline" element={<Timeline />} />
-          </Routes>
-        </div>
+          <Outlet />
         </div>
       </div>
-    </LoaderProvider>
+    </div>
+  )
+}
+
+function App() {
+  return (
+    <AuthProvider>
+      <LoaderProvider>
+        <Routes>
+          <Route path="/login" element={<Login />} />
+          <Route element={<ProtectedRoute />}>
+            <Route element={<AppLayout />}>
+              <Route index path="/" element={<Dashboard />} />
+              <Route path="/customers">
+                <Route index element={<Customers />} />
+                <Route path="create" element={<CreateCustomer />} />
+                <Route path=":id" element={<Details />} />
+              </Route>
+              <Route path="simulator" element={<Simulator />} />
+              <Route path="loans/:id" element={<LoanDetails />} />
+              <Route path="payments" element={<NotDevelopment />} />
+              <Route path="config" element={<Config />} />
+              <Route path="config/ui" element={<UiComponents />} />
+              <Route path="timeline" element={<Timeline />} />
+            </Route>
+          </Route>
+        </Routes>
+      </LoaderProvider>
+    </AuthProvider>
   )
 }
 

@@ -9,19 +9,20 @@ type InputTextProps = {
 
 const InputText = ({ label, placeholder, name, register, errors, disabled = false }: InputTextProps) => {
     return (
-        <label className={`flex flex-col gap-1 ${disabled ? "opacity-50" : ""}`}>
-            {label}
+        <label className={`flex w-full flex-col gap-2 ${disabled ? "opacity-50" : ""}`}>
+            <span className="input-label">{label}</span>
 
             <input
                 {...register(name)}
                 type="text"
+                data-form-field
                 placeholder={placeholder}
                 disabled={disabled}
-                className={`border border-gray-400 rounded-md p-2 focus:outline-none focus:ring-1 focus:ring-primary disabled:cursor-not-allowed`}
+                className="input-field"
             />
 
             {errors?.[name] && (
-                <span className="text-red-500 text-sm">
+                <span className="input-error">
                     {errors[name].message}
                 </span>
             )}

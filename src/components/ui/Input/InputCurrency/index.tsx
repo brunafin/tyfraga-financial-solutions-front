@@ -16,8 +16,8 @@ const formatBRL = (value: number) =>
 
 const InputCurrency = ({ label, name, control, errors, disabled }: InputCurrencyProps) => {
   return (
-    <label className={`flex flex-col gap-1 ${disabled ? "opacity-50" : ""}`}>
-      {label}
+    <label className={`flex w-full flex-col gap-2 ${disabled ? "opacity-50" : ""}`}>
+      <span className="input-label">{label}</span>
 
       <Controller
         name={name}
@@ -26,19 +26,21 @@ const InputCurrency = ({ label, name, control, errors, disabled }: InputCurrency
         render={({ field }) => (
           <input
           type="text"
+          inputMode="decimal"
+          data-form-field
           disabled={disabled}
             value={formatBRL(field.value)}
             onChange={(e) => {
               const numbers = e.target.value.replace(/\D/g, "");
               field.onChange(Number(numbers));
             }}
-            className="border border-gray-400 rounded-md p-2 focus:outline-none focus:ring-1 focus:ring-primary disabled:cursor-not-allowed"
+            className="input-field"
           />
         )}
       />
 
       {errors?.[name] && (
-        <span className="text-red-500 text-sm">
+        <span className="input-error">
           {errors[name].message}
         </span>
       )}

@@ -1,12 +1,12 @@
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap');
 @import "tailwindcss";
 
 :root {
-  font-family: 'Roboto', sans-serif;
+  font-family: 'Outfit', sans-serif;
   line-height: 1.5;
   font-weight: 400;
   background-color: #f5f5f5;
-  color: #19172c;
+  color: var(--primary);
   letter-spacing: 0.02em;
 
   font-synthesis: none;
@@ -14,13 +14,20 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 
-  --primary: #00072f;
-  --secondary: #007ec7;
+  --primary: #3F1B4C;
+  --secondary: #EA6E56;
+  --tertiary: #D72557;
+  --support: #78216F;
+  --text: var(--primary);
 }
 
 @theme {
+  --font-sans: 'Outfit', sans-serif;
   --color-primary: var(--primary);
   --color-secondary: var(--secondary);
+  --color-tertiary: var(--tertiary);
+  --color-support: var(--support);
+  --color-text: var(--text);
   --color-light: #f5f5f5;
 
   /* breakpoints */
@@ -30,11 +37,47 @@
   --breakpoint-xl: 1200px;
 }
 
-:focus-visible {
+:focus-visible:not(.input-field) {
   @apply outline-none ring-2 ring-secondary ring-offset-2 rounded-sm;
 }
 
+@layer components {
+  .input-label {
+    @apply text-sm font-medium text-text/70;
+  }
+
+  .input-field {
+    @apply w-full min-h-12 appearance-none rounded-xl border border-primary/15 bg-white px-4 py-3 text-base text-text shadow-sm outline-none transition placeholder:text-text/40 disabled:cursor-not-allowed disabled:bg-light disabled:opacity-60;
+  }
+
+  .input-field:focus,
+  .input-field:focus-visible,
+  .input-field.is-active {
+    border-color: var(--primary);
+    @apply ring-2 ring-primary/15 ring-offset-0 outline-none;
+  }
+
+  .input-error {
+    @apply text-sm text-tertiary;
+  }
+
+  .bg-gradient-brand {
+    background: linear-gradient(
+      135deg,
+      var(--primary) 0%,
+      color-mix(in srgb, var(--primary) 90%, var(--tertiary)) 18%,
+      color-mix(in srgb, var(--primary) 74%, var(--tertiary)) 32%,
+      color-mix(in srgb, var(--primary) 54%, var(--tertiary)) 46%,
+      color-mix(in srgb, var(--primary) 34%, var(--tertiary)) 58%,
+      color-mix(in srgb, var(--tertiary) 80%, var(--secondary)) 70%,
+      color-mix(in srgb, var(--tertiary) 55%, var(--secondary)) 82%,
+      color-mix(in srgb, var(--tertiary) 28%, var(--secondary)) 92%,
+      color-mix(in srgb, var(--tertiary) 8%, var(--secondary)) 100%
+    );
+  }
+}
+
 body{
-  /* border: 2px solid red; */
+  font-family: 'Outfit', sans-serif;
   overflow-x: hidden;
 }

@@ -22,6 +22,7 @@ import { LoanService } from "../../services/loan";
 import IconButton from "../../components/ui/ButtonIcon";
 import { PlusCircle, TrashIcon } from "lucide-react";
 import { useNavigate } from "react-router";
+import { handleFormEnterNavigation } from "../../utils/handleFormEnterNavigation";
 
 const schema = z.object({
     customer_id: z.string(),
@@ -209,260 +210,241 @@ const Simulator = () => {
 
     return (
         <Section title="Simulador">
-            <form onSubmit={handleSubmit(onSubmit)}>
-                <div className="flex flex-col gap-5">
-                    <div className="flex items-end gap-2">
-                        <div className="flex-1">
-                            <InputSelect
-                                control={control}
-                                label="Cliente"
-                                name="customer_id"
-                                options={customers.map((customer) => ({
-                                    label: customer.name,
-                                    value: customer.uuid,
-                                }))}
-                                errors={errors}
-                                placeholder="Selecione um cliente"
-                            />
-                        </div>
-                    </div>
+            <form
+                onSubmit={handleSubmit(onSubmit)}
+                onKeyDown={handleFormEnterNavigation}
+                className="flex flex-col gap-6"
+            >
+                <InputSelect
+                    control={control}
+                    label="Cliente"
+                    name="customer_id"
+                    options={customers.map((customer) => ({
+                        label: customer.name,
+                        value: customer.uuid,
+                    }))}
+                    errors={errors}
+                    placeholder="Selecione um cliente"
+                />
 
-                    <div className="flex-1">
-                        <InputDate
-                            label="Data empréstimo"
-                            name="initial_date"
-                            register={register}
+                <InputDate
+                    label="Data empréstimo"
+                    name="initial_date"
+                    register={register}
+                    errors={errors}
+                />
+
+                <InputCurrency
+                    control={control}
+                    label="Valor do empréstimo"
+                    name="value"
+                    errors={errors}
+                />
+
+                <InputRadio
+                    control={control}
+                    label="Tipo"
+                    name="type"
+                    inline
+                    options={[
+                        { label: "Taxa", value: "tax" },
+                        {
+                            label: "Parcela definida",
+                            value: "installment",
+                        },
+                    ]}
+                />
+
+                {formValues.type === "tax" && (
+                    <div className="flex flex-col gap-4">
+                        <TaxBadge
+                            fullWidth
+                            tax={
+                                customers.find(
+                                    (item) =>
+                                        item.uuid === watch("customer_id")
+                                )?.averageTax || 20
+                            }
+                            taxByCustomer={
+                                !!formValues.customer_id &&
+                                !!customers.find(
+                                    (item) =>
+                                        item.uuid === watch("customer_id")
+                                )?.averageTax
+                            }
+                        />
+
+                        <InputPercentage
+                            control={control}
+                            label="Taxa de juros (%)"
+                            name="tax"
                             errors={errors}
                         />
                     </div>
+                )}
 
-                    <div>
-                        <InputCurrency
-                            control={control}
-                            label="Valor do empréstimo"
-                            name="value"
-                            errors={errors}
-                        />
-                    </div>
+                {formValues.type === "installment" && (
+                    <InputCurrency
+                        control={control}
+                        label="Valor da parcela"
+                        name="installment_value"
+                        errors={errors}
+                    />
+                )}
 
-                    <div>
-                        <InputRadio
-                            control={control}
-                            label="Tipo"
-                            name="type"
-                            inline
-                            options={[
-                                { label: "Taxa", value: "tax" },
-                                {
-                                    label: "Parcela definida",
-                                    value: "installment",
-                                },
-                            ]}
-                        />
-                    </div>
+                <div className="flex flex-col gap-4">
+                    <h2 className="text-xs font-medium tracking-wide text-text/50 uppercase">
+                        Vencimentos
+                    </h2>
 
-                    {formValues.type === "tax" && (
-                        <>
-                            <div>
-                                <TaxBadge
-                                    tax={
-                                        customers.find(
-                                            (item) =>
-                                                item.uuid === watch("customer_id")
-                                        )?.averageTax || 20
-                                    }
-                                    taxByCustomer={
-                                        !!formValues.customer_id &&
-                                        !!customers.find(
-                                            (item) =>
-                                                item.uuid === watch("customer_id")
-                                        )?.averageTax
-                                    }
-                                />
-                            </div>
-
-                            <div>
-                                <InputPercentage
-                                    control={control}
-                                    label="Taxa de juros (%)"
-                                    name="tax"
-                                    errors={errors}
-                                />
-                            </div>
-                        </>
-                    )}
-
-                    {formValues.type === "installment" && (
-                        <div>
-                            <InputCurrency
-                                control={control}
-                                label="Valor da parcela"
-                                name="installment_value"
-                                errors={errors}
-                            />
-                        </div>
-                    )}
-
-                    <div>
-                        <h2 className="text-lg text-primary mt-4 border-b border-secondary/50">
-                            Vencimentos
-                        </h2>
-                    </div>
-
-                    <div>
-                        {formValues.payment_dates &&
-                            formValues.payment_dates.length > 0 &&
-                            Array.from({
-                                length: formValues.payment_dates.length,
-                            }).map((_, index) => (
-                                <div
-                                    key={index}
-                                    className="flex items-end mb-4"
-                                >
-                                    <div className="flex-1">
-                                        <InputDate
-                                            label={`Data da parcela ${
-                                                index + 1
-                                            }`}
-                                            name={`payment_dates.${index}`}
-                                            register={register}
-                                            errors={errors}
-                                        />
-                                    </div>
-
-                                    {index > 0 && (
-                                        <IconButton
-                                            variant="destructive"
-                                            label="Remover parcela"
-                                            icon={<TrashIcon />}
-                                            onClick={() => {
-                                                const currentDates =
-                                                    getValues(
-                                                        "payment_dates"
-                                                    ) || [];
-
-                                                setValue(
-                                                    "payment_dates",
-                                                    currentDates.filter(
-                                                        (_: any, i: number) =>
-                                                            i !== index
-                                                    ),
-                                                    { shouldDirty: true }
-                                                );
-                                            }}
-                                        />
-                                    )}
-                                </div>
-                            ))}
-
-                        <div className="flex justify-center">
-                            <Button
-                                type="button"
-                                className="flex items-center gap-2"
-                                variant="link_primary"
-                                onClick={() => {
-                                    const currentDates =
-                                        getValues("payment_dates") || [];
-
-                                    setValue(
-                                        "payment_dates",
-                                        [...currentDates, ""],
-                                        { shouldDirty: true }
-                                    );
-                                }}
+                    {formValues.payment_dates &&
+                        formValues.payment_dates.length > 0 &&
+                        Array.from({
+                            length: formValues.payment_dates.length,
+                        }).map((_, index) => (
+                            <div
+                                key={index}
+                                className="flex items-end gap-3"
                             >
-                                <PlusCircle />
-                                Adicionar parcela
-                            </Button>
-                        </div>
+                                <div className="min-w-0 flex-1">
+                                    <InputDate
+                                        label={`Data da parcela ${
+                                            index + 1
+                                        }`}
+                                        name={`payment_dates.${index}`}
+                                        register={register}
+                                        errors={errors}
+                                    />
+                                </div>
+
+                                {index > 0 && (
+                                    <IconButton
+                                        className="mb-1 shrink-0"
+                                        variant="destructive"
+                                        label="Remover parcela"
+                                        icon={<TrashIcon />}
+                                        onClick={() => {
+                                            const currentDates =
+                                                getValues(
+                                                    "payment_dates"
+                                                ) || [];
+
+                                            setValue(
+                                                "payment_dates",
+                                                currentDates.filter(
+                                                    (_: any, i: number) =>
+                                                        i !== index
+                                                ),
+                                                { shouldDirty: true }
+                                            );
+                                        }}
+                                    />
+                                )}
+                            </div>
+                        ))}
+
+                    <div className="flex justify-center pt-1">
+                        <Button
+                            type="button"
+                            data-form-action="add"
+                            className="flex items-center gap-2"
+                            variant="link_primary"
+                            onClick={() => {
+                                const currentDates =
+                                    getValues("payment_dates") || [];
+
+                                setValue(
+                                    "payment_dates",
+                                    [...currentDates, ""],
+                                    { shouldDirty: true }
+                                );
+                            }}
+                        >
+                            <PlusCircle />
+                            Adicionar parcela
+                        </Button>
                     </div>
                 </div>
 
-                <div className="my-8">
-                    <Button
-                        size="full"
-                        type="button"
-                        disabled={
-                            !!formValues.payment_dates?.some(
-                                (item) => !item
-                            )
-                        }
-                        onClick={() => handleCalculationLoan()}
-                    >
-                        Simular
-                    </Button>
-                </div>
+                <Button
+                    size="full"
+                    type="button"
+                    data-form-action="primary"
+                    disabled={
+                        !!formValues.payment_dates?.some(
+                            (item) => !item
+                        )
+                    }
+                    onClick={() => handleCalculationLoan()}
+                >
+                    Simular
+                </Button>
 
                 {calculationResult && (
                     <div
                         ref={resultRef}
-                        className="mt-8 mb-16 py-3"
+                        className="flex flex-col gap-4 pb-8"
                     >
-                        <h2 className="text-xl mb-3">
-                            Resultado da simulação:
+                        <h2 className="text-xs font-medium tracking-wide text-text/50 uppercase">
+                            Resultado da simulação
                         </h2>
 
-                        <>
-                            <div className="mb-3 border border-secondary bg-secondary/20 rounded-sm p-3">
-                                <p>
-                                    Valor total a pagar:{" "}
-                                    <strong>
-                                        {formatToCurrencyBRL(
-                                            calculationResult.totalWithInterest
-                                        )}
-                                    </strong>
-                                </p>
+                        <div className="rounded-xl border border-primary/10 bg-white p-4 shadow-sm">
+                            <p className="text-sm text-text/70">
+                                Valor total a pagar:{" "}
+                                <strong className="text-base text-primary">
+                                    {formatToCurrencyBRL(
+                                        calculationResult.totalWithInterest
+                                    )}
+                                </strong>
+                            </p>
 
-                                <p>
-                                    Valor total de juros:{" "}
-                                    <strong>
-                                        {formatToCurrencyBRL(
-                                            calculationResult.totalInterest
-                                        )}
-                                    </strong>
-                                </p>
+                            <p className="mt-2 text-sm text-text/70">
+                                Valor total de juros:{" "}
+                                <strong className="text-base text-primary">
+                                    {formatToCurrencyBRL(
+                                        calculationResult.totalInterest
+                                    )}
+                                </strong>
+                            </p>
 
-                                <p>
-                                    Taxa mensal:{" "}
-                                    <strong>
-                                        {calculationResult.monthlyRate}%
-                                    </strong>
-                                </p>
-                            </div>
+                            <p className="mt-2 text-sm text-text/70">
+                                Taxa mensal:{" "}
+                                <strong className="text-base text-primary">
+                                    {calculationResult.monthlyRate}%
+                                </strong>
+                            </p>
+                        </div>
 
-                            <div>
-                                <Table
-                                    columns={[
-                                        {
-                                            header: "Parcela",
-                                            accessor: "installment",
-                                        },
-                                        {
-                                            header: "Vencimento",
-                                            accessor: "due_date",
-                                        },
-                                        {
-                                            header: "Valor",
-                                            accessor: "installmentValue",
-                                        },
-                                    ]}
-                                    data={tableData}
-                                />
-                            </div>
-                        </>
+                        <Table
+                            columns={[
+                                {
+                                    header: "Parcela",
+                                    accessor: "installment",
+                                },
+                                {
+                                    header: "Vencimento",
+                                    accessor: "due_date",
+                                },
+                                {
+                                    header: "Valor",
+                                    accessor: "installmentValue",
+                                },
+                            ]}
+                            data={tableData}
+                        />
                     </div>
                 )}
 
                 {calculationResult && formValues.customer_id && (
-                    <div className="mb-8">
-                        <Button
-                            size="full"
-                            type="submit"
-                            variant="secondary"
-                        >
-                            Emprestar
-                        </Button>
-                    </div>
+                    <Button
+                        size="full"
+                        type="submit"
+                        variant="secondary"
+                        className="mt-2"
+                    >
+                        Emprestar
+                    </Button>
                 )}
             </form>
         </Section>

@@ -13,14 +13,14 @@ type TableProps<T> = {
 function Table<T>({ columns, data, counterInfo }: TableProps<T>) {
   return (
     <div className="w-full overflow-x-auto">
-      {counterInfo && <p className="text-primary/70 mb-2">{counterInfo}</p>}
+      {counterInfo && <p className="text-text/70 mb-2">{counterInfo}</p>}
       <table className="w-full rounded-md overflow-hidden">
         <thead className="bg-primary/10">
           <tr className="border-0">
             {columns.map((col, index) => (
               <th
                 key={index}
-                className={`text-left p-3 text-sm font-semibold text-primary/80 ${index === columns.length - 1 ? "text-right" : ""}`}
+                className={`text-left p-3 text-sm font-semibold text-text/80 ${index === columns.length - 1 ? "text-right" : ""}`}
               >
                 {col.header}
               </th>
@@ -33,7 +33,7 @@ function Table<T>({ columns, data, counterInfo }: TableProps<T>) {
             <tr>
               <td
                 colSpan={columns.length}
-                className="text-center p-4 text-primary"
+                className="text-center p-4 text-text"
               >
                 Nenhum registro encontrado
               </td>

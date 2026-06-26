@@ -30,8 +30,8 @@ const InputPhone = ({
   disabled = false,
 }: InputPhoneProps) => {
   return (
-    <label className={`flex flex-col gap-1 ${disabled ? "opacity-50" : ""}`}>
-      {label}
+    <label className={`flex w-full flex-col gap-2 ${disabled ? "opacity-50" : ""}`}>
+      <span className="input-label">{label}</span>
 
       <Controller
         name={name}
@@ -41,20 +41,21 @@ const InputPhone = ({
           <input
             type="text"
             inputMode="numeric"
+            data-form-field
             disabled={disabled}
-            value={formatPhone(field.value || "")} // 👈 aqui está a correção
+            value={formatPhone(field.value || "")}
             onChange={(e) => {
               const numbers = e.target.value.replace(/\D/g, "").slice(0, 11);
               field.onChange(numbers);
             }}
-            placeholder="(11) 91234-5678"
-            className="border border-gray-400 rounded-md p-2 focus:outline-none focus:ring-1 focus:ring-primary disabled:cursor-not-allowed"
+            placeholder="(51) 91234-5678"
+            className="input-field"
           />
         )}
       />
 
       {errors?.[name] && (
-        <span className="text-red-500 text-sm">
+        <span className="input-error">
           {errors[name].message}
         </span>
       )}

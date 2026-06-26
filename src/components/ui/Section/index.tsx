@@ -7,12 +7,13 @@ type SectionProps = {
   children: React.ReactNode;
   action?: React.ReactNode;
   goBack?: boolean;
+  hideDivider?: boolean;
 };
 
-const Section = ({ title, children, goBack }: SectionProps) => {
+const Section = ({ title, children, goBack, hideDivider = false }: SectionProps) => {
   return (
     <section className="pb-24 md:pb-4 p-4 md:ms-20 min-h-[calc(100dvh-10vh-5rem)] md:min-h-[calc(100dvh-10vh)]">
-      <div className={`border-b border-primary/10 flex ${goBack ? 'items-center justify-start' : 'items-baseline justify-between'} mb-6`}>
+      <div className={`flex ${goBack ? 'items-center justify-start' : 'items-baseline justify-between'} ${hideDivider ? 'mb-0' : 'mb-4'}`}>
         {goBack && (
           <div className="flex items-center">
             <IconButton
@@ -23,7 +24,7 @@ const Section = ({ title, children, goBack }: SectionProps) => {
             />
           </div>
         )}
-        <Title className="font-bold text-sm">{title}</Title>
+        <Title className="text-sm uppercase">{title}</Title>
 
         {/* {action && (
           <>

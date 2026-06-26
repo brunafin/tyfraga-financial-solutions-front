@@ -32,8 +32,8 @@ const ButtonNavLink = ({
 
   const variants: Record<Variant, string> = {
     primary: `${classNamesBase} bg-primary text-white hover:bg-primary/95`,
-    outline_primary: `${classNamesBase} border border-primary text-primary hover:bg-primary/95 hover:text-white`,
-    link_primary: `${classNamesBase} underline text-primary hover:text-primary/95 hover:font-bold`,
+    outline_primary: `${classNamesBase} border border-primary text-text hover:bg-primary/95 hover:text-white`,
+    link_primary: `${classNamesBase} underline text-text hover:text-text/95 hover:font-bold`,
     secondary: `${classNamesBase} bg-secondary text-white hover:bg-secondary/95`,
     outline_secondary: `${classNamesBase} border border-secondary text-secondary hover:bg-secondary/95 hover:text-white`,
     link_secondary: `${classNamesBase} underline text-secondary hover:text-secondary/95 hover:font-bold`,

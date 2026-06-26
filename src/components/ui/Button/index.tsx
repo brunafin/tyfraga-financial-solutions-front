@@ -4,20 +4,28 @@ interface IButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
     size?: "full" | "auto";
 }
 
-const Button = ({ children, variant, size, className, ...props }: IButtonProps) => {
-const classNamesBase = `${size === 'full' ? 'w-full' : 'w-fit'} py-2 px-4 rounded-md cursor-pointer transition-colors`;
+const Button = ({ children, variant, size, className = "", disabled, ...props }: IButtonProps) => {
+    const sizeClasses = size === "full"
+        ? "w-full min-h-12 rounded-xl px-4 py-3 text-base font-semibold"
+        : "w-fit rounded-md px-4 py-2";
+
+    const classNamesBase = `${sizeClasses} inline-flex items-center justify-center cursor-pointer transition-colors disabled:cursor-not-allowed disabled:opacity-50`;
     const variants = {
-        primary: `${classNamesBase} bg-primary text-white hover:bg-primary/95`,
-        outline_primary: `${classNamesBase} border border-primary text-primary hover:bg-primary/95 hover:text-white`,
-        link_primary: `${classNamesBase} underline text-primary hover:text-primary/95 hover:font-bold`,
-        secondary: `${classNamesBase} bg-secondary text-white hover:bg-secondary/95`,
-        outline_secondary: `${classNamesBase} border border-secondary text-secondary hover:bg-secondary/95 hover:text-white`,
-        link_secondary: `${classNamesBase} underline text-secondary hover:text-secondary/95 hover:font-bold`,
-        destructive: `${classNamesBase} bg-red-800 text-white hover:bg-red-600`,
+        primary: `${classNamesBase} bg-primary text-white hover:bg-primary/95 disabled:hover:bg-primary`,
+        outline_primary: `${classNamesBase} border border-primary text-text hover:bg-primary/95 hover:text-white disabled:hover:bg-transparent disabled:hover:text-text`,
+        link_primary: `${classNamesBase} min-h-0 rounded-none px-0 py-0 font-medium underline hover:font-semibold disabled:hover:font-medium`,
+        secondary: `${classNamesBase} bg-secondary text-white hover:bg-secondary/95 disabled:hover:bg-secondary`,
+        outline_secondary: `${classNamesBase} border border-secondary text-secondary hover:bg-secondary/95 hover:text-white disabled:hover:bg-transparent disabled:hover:text-secondary`,
+        link_secondary: `${classNamesBase} min-h-0 rounded-none px-0 py-0 font-medium underline hover:font-semibold disabled:hover:font-medium`,
+        destructive: `${classNamesBase} bg-red-800 text-white hover:bg-red-600 disabled:hover:bg-red-800`,
     }
 
     return (
-        <button className={`${className} ${variants[variant || "primary"]} ${props.disabled && 'disabled:cursor-not-allowed disabled:bg-primary/20'}`} {...props}>
+        <button
+            className={`${variants[variant || "primary"]} ${className}`}
+            disabled={disabled}
+            {...props}
+        >
             {children}
         </button>
     )

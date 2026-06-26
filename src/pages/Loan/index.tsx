@@ -3,155 +3,141 @@ import Section from "../../components/ui/Section";
 import { useEffect, useState } from "react";
 import { useLoader } from "../../contexts/Loader/useLoader";
 import { LoanService } from "../../services/loan";
-import formatCentsToRealBRL from "../../utils/formatCentsToRealBRL";
-import TaxBadge from "../../components/ui/TaxBadge";
 import Button from "../../components/ui/Button";
+import LoanSummaryCard from "./LoanSummaryCard";
+import InstallmentCard from "./InstallmentCard";
 
 interface ILoanDetail {
-    uuid: string;
-    originalValue: number;
-    loanValue: number;
-    loanDate: string;
-    tax: number;
-    payments: {
-        id: number;
-        installmentRef: number;
-        installmentValue: number;
-        dueDate: string;
-        payedValue: number;
-        payedDate: string | null;
-        observation: string | null;
-    }[];
+  uuid: string;
+  originalValue: number;
+  loanValue: number;
+  loanDate: string;
+  tax: number;
+  payments: {
+    id: number;
+    installmentRef: number;
+    installmentValue: number;
+    dueDate: string;
+    payedValue: number;
+    payedDate: string | null;
+    observation: string | null;
+  }[];
 }
 
 const LoanDetails = () => {
-    const { id } = useParams();
-    const { showLoader, hideLoader, loading } = useLoader();
-    const [loan, setLoan] = useState<ILoanDetail | null>(null);
+  const { id } = useParams();
+  const { showLoader, hideLoader, loading } = useLoader();
+  const [loan, setLoan] = useState<ILoanDetail | null>(null);
 
-    const fetchLoanById = async () => {
-        showLoader();
-        try {
-            const loan = await LoanService.getLoanById(id!);
-            setLoan(loan);
-        } catch (error) {
-            console.error('Erro ao buscar empréstimo:', error);
-        } finally {
-            hideLoader();
-        }
-    };
-
-    useEffect(() => {
-        if (id) {
-            fetchLoanById();
-        }
-    }, [id])
-
-    const handleDeleteLoan = async (loanId: string) => {
-        showLoader();
-        try {
-            await LoanService.deleteLoan(loanId);
-            alert('Empréstimo excluído com sucesso!');
-            window.history.back();
-        } catch (error) {
-            console.error('Erro ao excluir empréstimo:', error);
-            alert('Ocorreu um erro ao excluir o empréstimo. Tente novamente.');
-        } finally {
-            hideLoader();
-        }
-    };
-
-    if (loading) {
-        return (
-            <></>
-        )
+  const fetchLoanById = async () => {
+    showLoader();
+    try {
+      const loan = await LoanService.getLoanById(id!);
+      setLoan(loan);
+    } catch (error) {
+      console.error("Erro ao buscar empréstimo:", error);
+    } finally {
+      hideLoader();
     }
+  };
 
-    const handlePay = async (installmentId: number) => {
-        showLoader();
-        try {
-            const response = await LoanService.checkPayDate(installmentId);
-            console.log(response);
-            await fetchLoanById();
-        } catch (error) {
-            console.error(error);
-        } finally {
-            hideLoader();
-        }
+  useEffect(() => {
+    if (id) {
+      fetchLoanById();
     }
+  }, [id]);
 
-    const paymentStatus = (dueDate: string, payedDate: string | null) => {
-        const now = new Date();
-        const due = new Date(dueDate);
-
-        if (payedDate) {
-            return 'border-l-4 border-green-600';
-        }
-
-        if (due < now) {
-            return 'border-l-4 border-red-600';
-        }
-
-        return 'border-l-4 border-amber-500';
+  const handleDeleteLoan = async (loanId: string) => {
+    showLoader();
+    try {
+      await LoanService.deleteLoan(loanId);
+      alert("Empréstimo excluído com sucesso!");
+      window.history.back();
+    } catch (error) {
+      console.error("Erro ao excluir empréstimo:", error);
+      alert("Ocorreu um erro ao excluir o empréstimo. Tente novamente.");
+    } finally {
+      hideLoader();
     }
+  };
 
-    return (
-        <Section
-            title="Detalhes do Empréstimo"
-            goBack
-        >
-            <div className="text-primary">
-                {/* <div className="flex items-center gap-2 mb-3">
-                    <h2 className="text-xl font-bold">Empréstimo nuḿero {loan?.uuid}</h2>
-                </div> */}
-                <ul>
-                    <li>Data do empréstimo: {new Date(loan?.loanDate || '').toLocaleDateString()}</li>
-                    <li>Total Emprestado: {' '}
+  const handlePay = async (installmentId: number) => {
+    showLoader();
+    try {
+      await LoanService.checkPayDate(installmentId);
+      await fetchLoanById();
+    } catch (error) {
+      console.error(error);
+    } finally {
+      hideLoader();
+    }
+  };
 
-                        {formatCentsToRealBRL(loan?.originalValue || 0)}
+  if (loading) {
+    return <></>;
+  }
 
-                    </li>
-                    <li>Total com juros: {' '}
+  const payments = loan?.payments ?? [];
+  const paidCount = payments.filter((payment) => payment.payedDate).length;
 
-                        {formatCentsToRealBRL(loan?.loanValue || 0)}
+  return (
+    <Section title="Detalhes do Empréstimo" goBack>
+      {loan && (
+        <div className="flex flex-col gap-6">
+          <LoanSummaryCard
+            loanDate={loan.loanDate}
+            tax={loan.tax}
+            originalValue={loan.originalValue}
+            loanValue={loan.loanValue}
+          />
 
-                    </li>
-                    <li className="mt-2">
-                        <TaxBadge tax={loan?.tax || 0} taxByCustomer label="Taxa" />
-                    </li>
-                </ul>
-                <ol>
-                    {loan?.payments?.map(installment => (
-                        <li key={installment.id} className={`mt-4 rounded-lg py-2 bg-white px-4 ${paymentStatus(installment.dueDate, installment.payedDate)}`}>
-                            <p>Parcela {installment.installmentRef}</p>
-                            <p>Valor: {formatCentsToRealBRL(installment.installmentValue)}</p>
-                            <p>Data de vencimento: {new Date(installment.dueDate).toLocaleDateString()}</p>
-                            {/* <p>Valor pago: {formatCentsToRealBRL(installment.payedValue)}</p> */}
-                            <p>Data de pagamento: {installment.payedDate ? new Date(installment.payedDate).toLocaleDateString() : 'Não pago'}</p>
-                            {installment.observation && <p>Observação: {installment.observation}</p>}
-                            {!installment.payedDate && (
-                                <Button variant="outline_primary" className="mt-2" onClick={() => handlePay(installment.id)}>
-                                    Marcar como pago
-                                </Button>
-                            )}
-                        </li>
-                    ))}
-                </ol>
+          <section>
+            <div className="mb-3 flex items-center justify-between">
+              <h3 className="text-xs font-medium tracking-wide text-text/50 uppercase">
+                Parcelas
+              </h3>
+              <span className="text-sm text-text/50">
+                {paidCount} de {payments.length}
+              </span>
             </div>
-            <div className="mt-6 flex gap-2">
-                <Button 
-                    variant="destructive" 
-                    onClick={() => {
-                        if (window.confirm('Tem certeza que deseja excluir este empréstimo?')) {
-                            handleDeleteLoan(id!);
-                        }
-                    }}
-                >
-                    Excluir Empréstimo
-                </Button>
-            </div>
-        </Section>
-    )
-}
+
+            {payments.length > 0 ? (
+              <ol className="flex flex-col gap-3">
+                {payments.map((installment) => (
+                  <InstallmentCard
+                    key={installment.id}
+                    installmentRef={installment.installmentRef}
+                    installmentValue={installment.installmentValue}
+                    dueDate={installment.dueDate}
+                    payedDate={installment.payedDate}
+                    observation={installment.observation}
+                    onMarkAsPaid={() => handlePay(installment.id)}
+                  />
+                ))}
+              </ol>
+            ) : (
+              <p className="text-sm text-text/60">
+                Nenhuma parcela encontrada.
+              </p>
+            )}
+          </section>
+
+          <Button
+            variant="destructive"
+            onClick={() => {
+              if (
+                window.confirm("Tem certeza que deseja excluir este empréstimo?")
+              ) {
+                handleDeleteLoan(id!);
+              }
+            }}
+          >
+            Excluir Empréstimo
+          </Button>
+        </div>
+      )}
+    </Section>
+  );
+};
 
 export default LoanDetails;

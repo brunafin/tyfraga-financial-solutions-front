@@ -7,6 +7,7 @@ import Button from "../../../components/ui/Button";
 import { CustomerService } from "../../../services/customer";
 import InputText from "../../../components/ui/Input/InputText";
 import InputPhone from "../../../components/ui/Input/InputPhone";
+import { handleFormEnterNavigation } from "../../../utils/handleFormEnterNavigation";
 
 
 const schema = z.object({
@@ -45,7 +46,11 @@ const CreateCustomer = () => {
 
   return (
     <Section title="Novo Cliente">
-      <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col md:w-3/4 gap-3">
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        onKeyDown={handleFormEnterNavigation}
+        className="flex flex-col md:w-3/4 gap-3"
+      >
 
         {/* Nome */}
         <div className="w-full md:w-1/2">
