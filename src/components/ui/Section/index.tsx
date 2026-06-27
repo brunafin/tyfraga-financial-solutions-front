@@ -24,7 +24,7 @@ const Section = ({ title, children, goBack, hideDivider = false }: SectionProps)
             />
           </div>
         )}
-        <Title className="text-sm uppercase">{title}</Title>
+        <Title className="page-title">{title}</Title>
 
         {/* {action && (
           <>

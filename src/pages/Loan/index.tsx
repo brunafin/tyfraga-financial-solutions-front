@@ -93,10 +93,10 @@ const LoanDetails = () => {
 
           <section>
             <div className="mb-3 flex items-center justify-between">
-              <h3 className="text-xs font-medium tracking-wide text-text/50 uppercase">
+              <h3 className="section-title">
                 Parcelas
               </h3>
-              <span className="text-sm text-text/50">
+              <span className="text-sm text-text/50 sm:text-base">
                 {paidCount} de {payments.length}
               </span>
             </div>
@@ -116,7 +116,7 @@ const LoanDetails = () => {
                 ))}
               </ol>
             ) : (
-              <p className="text-sm text-text/60">
+              <p className="text-sm text-text/60 sm:text-base">
                 Nenhuma parcela encontrada.
               </p>
             )}

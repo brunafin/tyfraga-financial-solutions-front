@@ -45,7 +45,7 @@ const Customers = () => {
           ))}
         </ul>
       ) : (
-        <p className="text-text/60">Nenhum cliente encontrado</p>
+        <p className="text-sm text-text/60 sm:text-base">Nenhum cliente encontrado</p>
       )}
 
       <Outlet />

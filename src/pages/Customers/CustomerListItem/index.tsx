@@ -31,14 +31,14 @@ const CustomerListItem = ({
         className="flex items-center gap-4 rounded-xl bg-white p-4 shadow-sm transition-shadow hover:shadow-md"
       >
         <span
-          className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-lg font-semibold ${avatarClass}`}
+          className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-base font-semibold sm:text-lg ${avatarClass}`}
           aria-hidden
         >
           {initial}
         </span>
         <div className="min-w-0 flex-1">
-          <p className="truncate font-semibold text-text">{name}</p>
-          <p className="text-sm text-text/50">{formatLoansCount(loansCount)}</p>
+          <p className="truncate text-base font-semibold text-text sm:text-lg">{name}</p>
+          <p className="text-sm text-text/50 sm:text-base">{formatLoansCount(loansCount)}</p>
         </div>
         <ChevronRight className="shrink-0 text-text/30" size={20} />
       </NavLink>

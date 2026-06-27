@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Eye, EyeOff } from "lucide-react";
 import { z } from "zod";
-import LogoFull from "../../assets/logo-full.png";
+import LogoFull from "../../assets/logo-full.svg";
 import Button from "../../components/ui/Button";
 import { useAuth } from "../../contexts/Auth/useAuth";
 

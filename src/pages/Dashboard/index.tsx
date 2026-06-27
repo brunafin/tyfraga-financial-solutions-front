@@ -33,7 +33,7 @@ export interface ITimelineItem {
 const formatValue = (value: number) =>
   formatCentsToRealBRL(value) ?? "R$ 0,00";
 
-const sectionTitleClass = "text-xs font-medium tracking-wide text-text/50 uppercase";
+const sectionTitleClass = "section-title";
 
 const Dashboard = () => {
   const { showLoader, hideLoader } = useLoader();
@@ -66,7 +66,7 @@ const Dashboard = () => {
   return (
     <>
       <Section title="Bem vindo, Turco" hideDivider>
-        <p className="text-text/70 mb-4">
+        <p className="mb-4 text-sm text-text/70 sm:text-base">
           Aqui está um resumo das operações.
         </p>
         <div className="flex flex-col gap-3">
@@ -113,13 +113,13 @@ const Dashboard = () => {
                 <h4 className={`${sectionTitleClass} mb-2`}>Próximos pagamentos</h4>
                 <ol>
                   {nextPayments?.map((item) => (
-                    <li key={item.id} className="border-b border-primary/10 py-2 text-sm text-text/80">
-                      <div className="flex gap-3 items-center justify-between">
-                        <div className="flex gap-3">
-                          <span>{new Date(item.date).toLocaleDateString()}</span>
-                          <span>{item.customerName}</span>
+                    <li key={item.id} className="border-b border-primary/10 py-2 list-row-text">
+                      <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between sm:gap-3">
+                        <div className="flex min-w-0 flex-col gap-0.5 sm:flex-row sm:gap-3">
+                          <span className="shrink-0">{new Date(item.date).toLocaleDateString()}</span>
+                          <span className="truncate">{item.customerName}</span>
                         </div>
-                        <p>{formatCentsToRealBRL(item.amount, false)}</p>
+                        <p className="shrink-0 font-medium text-primary">{formatCentsToRealBRL(item.amount, false)}</p>
                       </div>
                     </li>
                   ))}
@@ -149,17 +149,17 @@ const Dashboard = () => {
                 <h4 className={`${sectionTitleClass} mb-2`}>Pagamentos atrasados</h4>
                 <ol>
                   {info.customersOverdue?.map((item) => (
-                    <li key={item.id} className="border-b border-primary/10 py-2 text-sm text-text/80">
-                      <div className="flex gap-3 items-center justify-between">
-                        <div className="flex gap-3">
-                          <span className="text-sm text-text/80">{new Date(item.date).toLocaleDateString()}</span>
-                          <span>{item.customerName}</span>
+                    <li key={item.id} className="border-b border-primary/10 py-2 list-row-text">
+                      <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between sm:gap-3">
+                        <div className="flex min-w-0 flex-col gap-0.5 sm:flex-row sm:gap-3">
+                          <span className="shrink-0">{new Date(item.date).toLocaleDateString()}</span>
+                          <span className="truncate">{item.customerName}</span>
                         </div>
-                        <p>{formatCentsToRealBRL(item.amount, false)}</p>
+                        <p className="shrink-0 font-medium text-primary">{formatCentsToRealBRL(item.amount, false)}</p>
                       </div>
                     </li>
                   ))}
-                  <li className="mt-2 flex justify-between text-sm font-bold text-tertiary">
+                  <li className="mt-2 flex justify-between text-sm font-bold text-tertiary sm:text-base">
                     <span>Total em atraso</span>
                     <span>
                       {formatCentsToRealBRL(
@@ -179,7 +179,7 @@ const Dashboard = () => {
           <div>
             <h3 className={`${sectionTitleClass} mb-3`}>Histórico de operações</h3>
             <TimelineList items={timeline} />
-            <NavLink to="/timeline" className="mt-4 text-text text-sm flex justify-center underline p-2 rounded bg-primary/10">
+            <NavLink to="/timeline" className="mt-4 flex justify-center rounded bg-primary/10 p-2 text-sm text-text underline sm:text-base">
               Ver todas
             </NavLink>
           </div>

@@ -22,8 +22,8 @@ const LoanSummaryCard = ({
     <div className="rounded-xl bg-white p-5 shadow-sm">
       <div className="flex items-start justify-between gap-3">
         <div>
-          <p className="text-xs text-text/50">Data do empréstimo</p>
-          <p className="mt-1 font-semibold text-primary">
+          <p className="metric-label">Data do empréstimo</p>
+          <p className="mt-1 text-sm font-semibold text-primary sm:text-base">
             {formatDateTimeBR(loanDate)}
           </p>
         </div>
@@ -34,14 +34,14 @@ const LoanSummaryCard = ({
 
       <div className="grid grid-cols-2 gap-4">
         <div>
-          <p className="text-xs text-text/50">Total Emprestado</p>
-          <p className="mt-1 text-lg font-bold text-primary">
+          <p className="metric-label">Total Emprestado</p>
+          <p className="metric-value mt-1">
             {formatValue(originalValue)}
           </p>
         </div>
         <div>
-          <p className="text-xs text-text/50">Total com juros</p>
-          <p className="mt-1 text-lg font-bold text-tertiary">
+          <p className="metric-label">Total com juros</p>
+          <p className="metric-value mt-1 text-tertiary">
             {formatValue(loanValue)}
           </p>
         </div>

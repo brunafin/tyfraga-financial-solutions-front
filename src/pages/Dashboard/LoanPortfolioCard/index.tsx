@@ -14,20 +14,20 @@ const LoanPortfolioCard = ({ principal, totalWithInterest }: LoanPortfolioCardPr
   return (
     <div className="rounded-xl bg-white p-5 shadow">
       <div>
-        <p className="mb-1 text-sm text-text/60">Lucro Estimado</p>
-        <p className="text-3xl font-bold text-primary">{formatValue(estimatedProfit)}</p>
+        <p className="metric-label mb-1">Lucro Estimado</p>
+        <p className="metric-value-hero">{formatValue(estimatedProfit)}</p>
       </div>
 
       <hr className="my-4 border-primary/10" />
 
-      <div className="flex gap-4">
+      <div className="flex flex-col gap-4 sm:flex-row">
         <div className="flex-1">
-          <p className="mb-1 text-sm text-text/60">Principal</p>
-          <p className="text-lg font-bold text-primary">R$ {formatValue(principal, false)}</p>
+          <p className="metric-label mb-1">Principal</p>
+          <p className="metric-value">R$ {formatValue(principal, false)}</p>
         </div>
         <div className="flex-1">
-          <p className="mb-1 text-sm text-text/60">Total c/ Juros</p>
-          <p className="text-lg font-bold text-primary">R$ {formatValue(totalWithInterest, false)}</p>
+          <p className="metric-label mb-1">Total c/ Juros</p>
+          <p className="metric-value">R$ {formatValue(totalWithInterest, false)}</p>
         </div>
       </div>
     </div>

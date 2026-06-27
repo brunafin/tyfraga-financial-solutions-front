@@ -1,18 +1,19 @@
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400..700&display=swap');
 @import "tailwindcss";
 
 :root {
-  font-family: 'Outfit', sans-serif;
+  font-family: 'Inter', sans-serif;
   line-height: 1.5;
   font-weight: 400;
   background-color: #f5f5f5;
   color: var(--primary);
-  letter-spacing: 0.02em;
+  letter-spacing: normal;
 
   font-synthesis: none;
-  text-rendering: optimizeLegibility;
+  text-rendering: auto;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  font-feature-settings: "liga" 1, "calt" 1;
 
   --primary: #3F1B4C;
   --secondary: #EA6E56;
@@ -22,7 +23,7 @@
 }
 
 @theme {
-  --font-sans: 'Outfit', sans-serif;
+  --font-sans: 'Inter', sans-serif;
   --color-primary: var(--primary);
   --color-secondary: var(--secondary);
   --color-tertiary: var(--tertiary);
@@ -48,6 +49,11 @@
 
   .input-field {
     @apply w-full min-h-12 appearance-none rounded-xl border border-primary/15 bg-white px-4 py-3 text-base text-text shadow-sm outline-none transition placeholder:text-text/40 disabled:cursor-not-allowed disabled:bg-light disabled:opacity-60;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .text-numeric {
+    font-variant-numeric: tabular-nums;
   }
 
   .input-field:focus,
@@ -59,6 +65,36 @@
 
   .input-error {
     @apply text-sm text-tertiary;
+  }
+
+  .page-title {
+    @apply text-base font-semibold uppercase tracking-wide md:text-lg;
+  }
+
+  .section-title {
+    @apply text-xs font-medium tracking-wide text-text/50 uppercase sm:text-sm;
+  }
+
+  .metric-label {
+    @apply text-xs text-text/50 sm:text-sm;
+  }
+
+  .metric-value {
+    @apply text-base font-bold text-primary sm:text-lg;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .metric-value-hero {
+    @apply text-2xl font-bold text-primary break-words sm:text-3xl;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .content-heading {
+    @apply text-xl font-bold text-primary sm:text-2xl;
+  }
+
+  .list-row-text {
+    @apply text-sm text-text/80 sm:text-base;
   }
 
   .bg-gradient-brand {
@@ -77,7 +113,8 @@
   }
 }
 
-body{
-  font-family: 'Outfit', sans-serif;
+body {
+  font-family: 'Inter', sans-serif;
   overflow-x: hidden;
+  font-optical-sizing: auto;
 }

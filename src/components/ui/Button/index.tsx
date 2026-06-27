@@ -7,7 +7,7 @@ interface IButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 const Button = ({ children, variant, size, className = "", disabled, ...props }: IButtonProps) => {
     const sizeClasses = size === "full"
         ? "w-full min-h-12 rounded-xl px-4 py-3 text-base font-semibold"
-        : "w-fit rounded-md px-4 py-2";
+        : "w-fit rounded-md px-4 py-2 text-sm font-medium sm:text-base";
 
     const classNamesBase = `${sizeClasses} inline-flex items-center justify-center cursor-pointer transition-colors disabled:cursor-not-allowed disabled:opacity-50`;
     const variants = {

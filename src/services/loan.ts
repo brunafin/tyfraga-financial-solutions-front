@@ -8,7 +8,11 @@ export const LoanService = {
         loan_date: string;
         tax: number;
         installment_value: number;
-        installments: {ref: number; due_date: string}[];
+        installments: {
+            ref: number;
+            due_date: string;
+            installment_value?: number;
+        }[];
     }) {
         const response = await api.post("/loans", data);
         return response.data;

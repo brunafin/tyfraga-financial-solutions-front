@@ -37,14 +37,14 @@ const TimelineList = ({ items }: TimelineListProps) => {
 
             <div className="min-w-0 flex-1 pt-0.5">
               <div className="mb-1 flex items-center justify-between gap-3">
-                <span className="text-xs tracking-wide text-primary">
+                <span className="text-xs tracking-wide text-primary sm:text-sm">
                   {marker.text}
                 </span>
-                <p className="shrink-0 text-sm font-bold text-primary">
+                <p className="shrink-0 text-sm font-bold text-primary text-numeric sm:text-base">
                   {formatCentsToRealBRL(item.amount, false)}
                 </p>
               </div>
-              <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-text/70">
+              <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-text/70 sm:text-base">
                 <span>{new Date(item.date).toLocaleDateString()}</span>
                 <span className="text-primary">{item.customerName}</span>
               </div>

@@ -26,9 +26,9 @@ const InstallmentCard = ({
     <li className="rounded-xl bg-white p-4 shadow-sm">
       <div className="mb-4 flex items-start justify-between gap-3">
         <div>
-          <p className="font-bold text-primary">Parcela {installmentRef}</p>
+          <p className="text-base font-bold text-primary sm:text-lg">Parcela {installmentRef}</p>
           <span
-            className={`mt-2 inline-block rounded-full px-3 py-1 text-xs font-medium ${
+            className={`mt-2 inline-block rounded-full px-3 py-1 text-xs font-medium sm:text-sm ${
               isPaid
                 ? "bg-green-100 text-green-800"
                 : "bg-tertiary/15 text-tertiary"
@@ -37,12 +37,12 @@ const InstallmentCard = ({
             {isPaid ? "Pago" : "Não pago"}
           </span>
         </div>
-        <p className="shrink-0 font-bold text-primary">
+        <p className="shrink-0 text-base font-bold text-primary text-numeric sm:text-lg">
           {formatCentsToRealBRL(installmentValue)}
         </p>
       </div>
 
-      <div className="mb-4 grid grid-cols-2 gap-4 text-sm">
+      <div className="mb-4 grid grid-cols-1 gap-4 text-sm sm:grid-cols-2 sm:text-base">
         <div className="flex items-start gap-2">
           <Calendar
             size={16}
@@ -50,7 +50,7 @@ const InstallmentCard = ({
             aria-hidden
           />
           <div>
-            <p className="text-xs text-text/50">Vencimento</p>
+            <p className="metric-label">Vencimento</p>
             <p className="text-text/80">{formatDateTimeBR(dueDate)}</p>
           </div>
         </div>
@@ -63,7 +63,7 @@ const InstallmentCard = ({
               aria-hidden
             />
             <div>
-              <p className="text-xs text-text/50">Pagamento</p>
+              <p className="metric-label">Pagamento</p>
               <p className="text-text/80">{formatDateTimeBR(payedDate)}</p>
             </div>
           </div>
@@ -71,7 +71,7 @@ const InstallmentCard = ({
       </div>
 
       {observation && (
-        <p className="mb-4 text-sm text-text/60">Observação: {observation}</p>
+        <p className="mb-4 text-sm text-text/60 sm:text-base">Observação: {observation}</p>
       )}
 
       {!isPaid && (

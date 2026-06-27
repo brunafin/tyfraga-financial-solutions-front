@@ -27,19 +27,19 @@ const DashboardItem = ({
     >
       <h3
         className={[
-          'font-bold',
+          'font-bold text-numeric',
           isGradient
-            ? 'text-3xl text-white'
+            ? 'text-2xl text-white sm:text-3xl'
             : smallText
-              ? 'text-lg text-text/80'
+              ? 'text-base text-text/80 sm:text-lg'
               : alignCenter
-                ? 'text-2xl text-primary'
-                : 'text-xl text-text/80',
+                ? 'text-xl text-primary sm:text-2xl'
+                : 'text-lg text-text/80 sm:text-xl',
         ].join(' ')}
       >
         {title}
       </h3>
-      <p className={isGradient ? 'text-sm text-white/90' : 'text-text/60'}>{value}</p>
+      <p className={isGradient ? 'text-sm text-white/90 sm:text-base' : 'text-sm text-text/60 sm:text-base'}>{value}</p>
     </div>
   )
 }

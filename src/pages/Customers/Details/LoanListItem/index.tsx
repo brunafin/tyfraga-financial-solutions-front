@@ -34,10 +34,10 @@ const LoanListItem = ({
         />
         <div className="flex flex-1 items-center justify-between gap-3 p-4 pl-5">
           <div>
-            <p className="text-sm text-text/50">
+            <p className="text-sm text-text/50 sm:text-base">
               {formatDateTimeBR(loanDate)}
             </p>
-            <p className="font-bold text-primary">
+            <p className="text-base font-bold text-primary text-numeric sm:text-lg">
               {formatCentsToRealBRL(loanValue)}
             </p>
           </div>

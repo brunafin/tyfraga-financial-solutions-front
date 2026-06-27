@@ -1,4 +1,4 @@
-import LogoFull from "../../assets/logo-full.png"
+import LogoFull from "../../assets/logo-full.svg"
 import { NavLink } from "react-router"
 
 const Header = () => {

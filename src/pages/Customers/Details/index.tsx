@@ -146,8 +146,8 @@ const Details = () => {
       ) : (
         <div className="mb-6 flex items-start justify-between gap-4">
           <div className="min-w-0">
-            <h2 className="text-2xl font-bold text-primary">{customer?.name}</h2>
-            <p className="mt-1 text-sm text-text/50">
+            <h2 className="content-heading truncate">{customer?.name}</h2>
+            <p className="mt-1 text-sm text-text/50 sm:text-base">
               {formatLoansCount(customer?.total_loans ?? 0)}
             </p>
           </div>
@@ -186,11 +186,11 @@ const Details = () => {
 
           {customer.amount_pending_receive !== 0 && (
             <div className="rounded-xl bg-white p-5 text-center shadow-sm">
-              <p className="text-xs text-text/50">Valor pendente</p>
-              <p className="mt-1 text-2xl font-bold text-primary">
+              <p className="metric-label">Valor pendente</p>
+              <p className="metric-value-hero mt-1">
                 {formatValue(customer.amount_pending_receive)}
               </p>
-              <p className="mt-1 text-sm font-medium text-tertiary">
+              <p className="mt-1 text-sm font-medium text-tertiary sm:text-base">
                 {formatValue(customer.profit_pending)} (lucro)
               </p>
             </div>
@@ -198,7 +198,7 @@ const Details = () => {
 
           <section className="mt-3 mb-20">
             <div className="mb-3 flex items-center justify-between gap-3">
-              <h3 className="text-lg font-bold text-primary">Empréstimos</h3>
+              <h3 className="text-base font-bold text-primary sm:text-lg">Empréstimos</h3>
               {customer.total_loans > 0 && (
                 <TaxBadge
                   tax={Number(customer.average_tax.toFixed(2))}
@@ -220,7 +220,7 @@ const Details = () => {
                 ))}
               </ul>
             ) : (
-              <p className="text-sm text-text/60">Nenhum empréstimo encontrado.</p>
+              <p className="text-sm text-text/60 sm:text-base">Nenhum empréstimo encontrado.</p>
             )}
           </section>
         </div>

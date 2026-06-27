@@ -20,7 +20,7 @@ function Table<T>({ columns, data, counterInfo }: TableProps<T>) {
             {columns.map((col, index) => (
               <th
                 key={index}
-                className={`text-left p-3 text-sm font-semibold text-text/80 ${index === columns.length - 1 ? "text-right" : ""}`}
+                className={`text-left p-3 text-xs font-semibold text-text/80 sm:text-sm ${index === columns.length - 1 ? "text-right" : ""}`}
               >
                 {col.header}
               </th>
@@ -49,7 +49,7 @@ function Table<T>({ columns, data, counterInfo }: TableProps<T>) {
                 const value = row[col.accessor];
 
                 return (
-                  <td key={colIndex} className={`p-3 text-sm ${colIndex === columns.length - 1 ? "text-right" : ""}`}>
+                  <td key={colIndex} className={`p-3 text-xs sm:text-sm ${colIndex === columns.length - 1 ? "text-right" : ""}`}>
                     {col.render
                       ? col.render(value, row)
                       : String(value)}
