@@ -98,12 +98,12 @@ const Dashboard = () => {
                 <ol>
                   {nextPayments.map((item, index) => (
                     <li key={`${item.date}-${item.customerName}-${index}`} className="border-b border-primary/10 py-2 list-row-text">
-                      <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between sm:gap-3">
-                        <div className="flex min-w-0 flex-col gap-0.5 sm:flex-row sm:gap-3">
-                          <span className="shrink-0">{new Date(item.date).toLocaleDateString()}</span>
-                          <span className="truncate">{item.customerName}</span>
+                      <div className="flex items-center justify-between gap-2">
+                        <div className="flex min-w-0 flex-1 items-center gap-2">
+                          <span className="shrink-0 whitespace-nowrap">{new Date(item.date).toLocaleDateString()}</span>
+                          <span className="min-w-0 truncate">{item.customerName}</span>
                         </div>
-                        <p className="shrink-0 font-medium text-primary">{formatCentsToRealBRL(item.amount, false)}</p>
+                        <p className="shrink-0 whitespace-nowrap font-medium text-primary">{formatCentsToRealBRL(item.amount, false)}</p>
                       </div>
                     </li>
                   ))}
@@ -134,12 +134,12 @@ const Dashboard = () => {
                 <ol>
                   {info.customersOverdue.map((item, index) => (
                     <li key={`${item.date}-${item.customerName}-${index}`} className="border-b border-primary/10 py-2 list-row-text">
-                      <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between sm:gap-3">
-                        <div className="flex min-w-0 flex-col gap-0.5 sm:flex-row sm:gap-3">
-                          <span className="shrink-0">{new Date(item.date).toLocaleDateString()}</span>
-                          <span className="truncate">{item.customerName}</span>
+                      <div className="flex items-center justify-between gap-2">
+                        <div className="flex min-w-0 flex-1 items-center gap-2">
+                          <span className="shrink-0 whitespace-nowrap">{new Date(item.date).toLocaleDateString()}</span>
+                          <span className="min-w-0 truncate">{item.customerName}</span>
                         </div>
-                        <p className="shrink-0 font-medium text-primary">{formatCentsToRealBRL(item.amount, false)}</p>
+                        <p className="shrink-0 whitespace-nowrap font-medium text-primary">{formatCentsToRealBRL(item.amount, false)}</p>
                       </div>
                     </li>
                   ))}
