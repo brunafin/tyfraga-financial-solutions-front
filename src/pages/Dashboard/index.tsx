@@ -1,26 +1,16 @@
-import { useEffect, useState } from "react";
-import Section from "../../components/ui/Section"
-import DashboardItem from "./DashboardItem"
-import LoanPortfolioCard from "./LoanPortfolioCard"
-import SummaryMetricCard from "./SummaryMetricCard"
-import TimelineList from "../../components/TimelineList"
+import Section from "../../components/ui/Section";
+import DashboardItem from "./DashboardItem";
+import LoanPortfolioCard from "./LoanPortfolioCard";
+import SummaryMetricCard from "./SummaryMetricCard";
+import TimelineList from "../../components/TimelineList";
+import QueryError from "../../components/QueryError";
 import formatCentsToRealBRL from "../../utils/formatCentsToRealBRL";
-import { useLoader } from "../../contexts/Loader/useLoader";
-import { DashboardService } from "../../services/dashboard";
+import {
+  useDashboard,
+  useNextPayments,
+  useTimeline,
+} from "../../hooks/queries";
 import { NavLink } from "react-router";
-
-interface IInfo {
-  totalCustomers: number;
-  totalLoans: number;
-  totalAmountLoaned: number;
-  totalAmountLoanedWithInterest: number;
-  totalReceived: number;
-  totalPending: number;
-  interestReceived: number;
-  interestPending: number;
-  averageTax: number;
-  customersOverdue: ITimelineItem[];
-}
 
 export interface ITimelineItem {
   id: number;
@@ -36,32 +26,26 @@ const formatValue = (value: number) =>
 const sectionTitleClass = "section-title";
 
 const Dashboard = () => {
-  const { showLoader, hideLoader } = useLoader();
-  const [info, setInfo] = useState<IInfo | null>(null);
-  const [timeline, setTimeline] = useState<ITimelineItem[]>([]);
-  const [nextPayments, setNextPayments] = useState<ITimelineItem[]>([]);
+  const dashboardQuery = useDashboard();
+  const timelineQuery = useTimeline(5);
+  const nextPaymentsQuery = useNextPayments(5);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      showLoader();
-      try {
-        const [dashboardInfo, timelineData, nextPaymentsData] = await Promise.all([
-          DashboardService.getInfo(),
-          DashboardService.getTimeline({ limit: 5 }),
-          DashboardService.getNextPayments({ limit: 0 }),
-        ]);
-        setInfo(dashboardInfo);
-        setTimeline(timelineData.timeline);
-        setNextPayments(nextPaymentsData.timeline);
-      } catch (error) {
-        console.error('Erro ao buscar informações:', error);
-      }
-      hideLoader();
-    };
+  const isError =
+    dashboardQuery.isError ||
+    timelineQuery.isError ||
+    nextPaymentsQuery.isError;
 
-    fetchData();
-  }, [])
+  const info = dashboardQuery.data;
+  const timeline = timelineQuery.data ?? [];
+  const nextPayments = nextPaymentsQuery.data ?? [];
 
+  if (isError) {
+    return (
+      <Section title="Bem vindo, Turco" hideDivider>
+        <QueryError message="Não foi possível carregar o dashboard." />
+      </Section>
+    );
+  }
 
   return (
     <>
@@ -112,8 +96,8 @@ const Dashboard = () => {
               <div>
                 <h4 className={`${sectionTitleClass} mb-2`}>Próximos pagamentos</h4>
                 <ol>
-                  {nextPayments?.map((item) => (
-                    <li key={item.id} className="border-b border-primary/10 py-2 list-row-text">
+                  {nextPayments.map((item, index) => (
+                    <li key={`${item.date}-${item.customerName}-${index}`} className="border-b border-primary/10 py-2 list-row-text">
                       <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between sm:gap-3">
                         <div className="flex min-w-0 flex-col gap-0.5 sm:flex-row sm:gap-3">
                           <span className="shrink-0">{new Date(item.date).toLocaleDateString()}</span>
@@ -144,12 +128,12 @@ const Dashboard = () => {
                 label="Lucro"
               />
             </div>
-            {info?.customersOverdue && info?.customersOverdue.length > 0 ? (
+            {info?.customersOverdue && info.customersOverdue.length > 0 ? (
               <div>
                 <h4 className={`${sectionTitleClass} mb-2`}>Pagamentos atrasados</h4>
                 <ol>
-                  {info.customersOverdue?.map((item) => (
-                    <li key={item.id} className="border-b border-primary/10 py-2 list-row-text">
+                  {info.customersOverdue.map((item, index) => (
+                    <li key={`${item.date}-${item.customerName}-${index}`} className="border-b border-primary/10 py-2 list-row-text">
                       <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between sm:gap-3">
                         <div className="flex min-w-0 flex-col gap-0.5 sm:flex-row sm:gap-3">
                           <span className="shrink-0">{new Date(item.date).toLocaleDateString()}</span>

@@ -1,12 +1,9 @@
-import { useEffect, useRef, useState } from "react";
-import type { ICustomerListItem } from "../Customers/types";
-import { CustomerService } from "../../services/customer";
+import { useRef, useState } from "react";
 import Section from "../../components/ui/Section";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import z from "zod";
 import Button from "../../components/ui/Button";
-import { useLoader } from "../../contexts/Loader/useLoader";
 import TaxBadge from "../../components/ui/TaxBadge";
 import InputSelect from "../../components/ui/Input/InputSelect";
 import InputDate from "../../components/ui/Input/InputDate";
@@ -20,11 +17,12 @@ import {
 import Table from "../../components/ui/Table";
 import formatToCurrencyBRL from "../../utils/formatToCurrencyBRL";
 import { formatDateBR } from "../../utils/formatDateBR";
-import { LoanService } from "../../services/loan";
 import IconButton from "../../components/ui/ButtonIcon";
 import { PlusCircle, TrashIcon } from "lucide-react";
 import { useNavigate } from "react-router";
 import { handleFormEnterNavigation } from "../../utils/handleFormEnterNavigation";
+import QueryError from "../../components/QueryError";
+import { useCreateLoan, useCustomers } from "../../hooks/queries";
 
 const schema = z.object({
     customer_id: z.string(),
@@ -52,11 +50,10 @@ type CalculationResult = {
 
 const Simulator = () => {
     const navigate = useNavigate();
-    const { showLoader, hideLoader } = useLoader();
+    const createLoan = useCreateLoan();
+    const { data: customers = [], isError } = useCustomers();
 
     const resultRef = useRef<HTMLDivElement | null>(null);
-
-    const [customers, setCustomers] = useState<ICustomerListItem[]>([]);
     const [calculationResult, setCalculationResult] =
         useState<CalculationResult | null>(null);
     const [tableData, setTableData] = useState<
@@ -90,24 +87,10 @@ const Simulator = () => {
         },
     });
 
-    const formValues = watch();
-
-    useEffect(() => {
-        const fetchCustomers = async () => {
-            showLoader();
-
-            try {
-                const customers = await CustomerService.getCustomers();
-                setCustomers(customers.customers);
-            } catch (error) {
-                console.error("Erro ao buscar clientes:", error);
-            }
-
-            hideLoader();
-        };
-
-        fetchCustomers();
-    }, []);
+    const customerId = watch("customer_id");
+    const formType = watch("type");
+    const paymentDates = watch("payment_dates");
+    const paymentValues = watch("payment_values");
 
     const onSubmit = async (data: FormData) => {
         if (!data.value) {
@@ -118,8 +101,8 @@ const Simulator = () => {
             return alert("Simule o empréstimo antes de emprestar");
         }
 
-        const paymentValues = formValues.payment_values || [];
-        const isCustom = formValues.type === "custom";
+        const installmentPaymentValues = paymentValues || [];
+        const isCustom = formType === "custom";
 
         const obj = {
             customer_id: data.customer_id,
@@ -129,25 +112,23 @@ const Simulator = () => {
             tax: data.tax,
             installment_value: isCustom
                 ? Math.round(
-                      paymentValues.reduce((acc, value) => acc + value, 0) /
-                          paymentValues.length
+                      installmentPaymentValues.reduce((acc, value) => acc + value, 0) /
+                          installmentPaymentValues.length
                   )
                 : data.installment_value,
             installments:
-                formValues.payment_dates?.map((date, index) => ({
+                paymentDates?.map((date, index) => ({
                     ref: index + 1,
                     due_date: date,
                     ...(isCustom
-                        ? { installment_value: paymentValues[index] }
+                        ? { installment_value: installmentPaymentValues[index] }
                         : {}),
                 })) || [],
             observation: data.observation,
         };
 
         try {
-            showLoader();
-
-            await LoanService.createLoan(obj);
+            await createLoan.mutateAsync(obj);
 
             navigate(`/customers/${data.customer_id}`);
         } catch (error) {
@@ -156,29 +137,27 @@ const Simulator = () => {
             alert(
                 "Ocorreu um erro ao criar o empréstimo. Por favor, tente novamente."
             );
-        } finally {
-            hideLoader();
         }
     };
 
     const handleCalculationLoan = () => {
-        const values = watch();
+        const values = getValues();
 
-        const payment_dates: Date[] =
-            (formValues.payment_dates
+        const parsedPaymentDates: Date[] =
+            (paymentDates
                 ?.map((date) => (date ? new Date(date) : null))
                 .filter(Boolean) as Date[]) || [];
 
         if (
-            formValues.payment_dates?.length !== payment_dates.length ||
-            payment_dates.length === 0
+            paymentDates?.length !== parsedPaymentDates.length ||
+            parsedPaymentDates.length === 0
         ) {
             alert("Preencha todas as datas das parcelas");
             return;
         }
 
-        const loanDate = new Date(formValues.initial_date);
-        const principal = (formValues.value || 0) / 100;
+        const loanDate = new Date(values.initial_date);
+        const principal = (values.value || 0) / 100;
 
         if (!principal) {
             alert("Preencha o valor do empréstimo");
@@ -190,12 +169,12 @@ const Simulator = () => {
         let result: CalculationResult | null = null;
 
         try {
-            if (formValues.type === "tax") {
+            if (formType === "tax") {
                 result = calculateByRate(
                     principal,
-                    formValues.tax / 100,
+                    values.tax / 100,
                     loanDate,
-                    payment_dates
+                    parsedPaymentDates
                 );
 
                 setValue(
@@ -204,7 +183,7 @@ const Simulator = () => {
                 );
 
                 const tableDataResult =
-                    formValues.payment_dates?.map((date, index) => ({
+                    paymentDates?.map((date, index) => ({
                         installment: index + 1,
                         due_date: formatDateBR(date),
                         installmentValue: result?.installmentValue
@@ -213,7 +192,7 @@ const Simulator = () => {
                     })) || [];
 
                 setTableData(tableDataResult);
-            } else if (formValues.type === "installment") {
+            } else if (formType === "installment") {
                 if (!installmentValue) {
                     alert("Preencha o valor da parcela");
                     return;
@@ -223,7 +202,7 @@ const Simulator = () => {
                     principal,
                     installmentValue,
                     loanDate,
-                    payment_dates
+                    parsedPaymentDates
                 );
 
                 setValue("tax", result.monthlyRate, {
@@ -233,7 +212,7 @@ const Simulator = () => {
                 });
 
                 const tableDataResult =
-                    formValues.payment_dates?.map((date, index) => ({
+                    paymentDates?.map((date, index) => ({
                         installment: index + 1,
                         due_date: formatDateBR(date),
                         installmentValue: installmentValue
@@ -243,15 +222,15 @@ const Simulator = () => {
 
                 setTableData(tableDataResult);
             } else {
-                const paymentValues = formValues.payment_values || [];
+                const customPaymentValues = paymentValues || [];
 
-                if (paymentValues.length !== payment_dates.length) {
+                if (customPaymentValues.length !== parsedPaymentDates.length) {
                     alert("Preencha o valor de todas as parcelas");
                     return;
                 }
 
-                const cashFlows = payment_dates.map((date, index) => {
-                    const value = (paymentValues[index] || 0) / 100;
+                const cashFlows = parsedPaymentDates.map((date, index) => {
+                    const value = (customPaymentValues[index] || 0) / 100;
 
                     if (value <= 0) {
                         throw new Error(
@@ -275,7 +254,7 @@ const Simulator = () => {
                 });
 
                 const tableDataResult =
-                    formValues.payment_dates?.map((date, index) => ({
+                    paymentDates?.map((date, index) => ({
                         installment: index + 1,
                         due_date: formatDateBR(date),
                         installmentValue: `${formatToCurrencyBRL(
@@ -334,11 +313,20 @@ const Simulator = () => {
     };
 
     const isSimulateDisabled =
-        !!formValues.payment_dates?.some((item) => !item) ||
-        (formValues.type === "custom" &&
-            (formValues.payment_values?.length !==
-                formValues.payment_dates?.length ||
-                formValues.payment_values?.some((value) => !value)));
+        !!paymentDates?.some((item) => !item) ||
+        (formType === "custom" &&
+            (paymentValues?.length !== paymentDates?.length ||
+                paymentValues?.some((value) => !value)));
+
+    if (isError) {
+        return (
+            <Section title="Simulador">
+                <QueryError message="Não foi possível carregar os clientes." />
+            </Section>
+        );
+    }
+
+    const selectedCustomer = customers.find((item) => item.uuid === customerId);
 
     return (
         <Section title="Simulador">
@@ -393,22 +381,13 @@ const Simulator = () => {
                     />
                 </div>
 
-                {formValues.type === "tax" && (
+                {formType === "tax" && (
                     <div className="flex flex-col gap-4">
                         <TaxBadge
                             fullWidth
-                            tax={
-                                customers.find(
-                                    (item) =>
-                                        item.uuid === watch("customer_id")
-                                )?.averageTax || 20
-                            }
+                            tax={selectedCustomer?.averageTax || 20}
                             taxByCustomer={
-                                !!formValues.customer_id &&
-                                !!customers.find(
-                                    (item) =>
-                                        item.uuid === watch("customer_id")
-                                )?.averageTax
+                                !!customerId && !!selectedCustomer?.averageTax
                             }
                         />
 
@@ -421,7 +400,7 @@ const Simulator = () => {
                     </div>
                 )}
 
-                {formValues.type === "installment" && (
+                {formType === "installment" && (
                     <InputCurrency
                         control={control}
                         label="Valor da parcela"
@@ -435,11 +414,11 @@ const Simulator = () => {
                         Vencimentos
                     </h2>
 
-                    {formValues.payment_dates &&
-                        formValues.payment_dates.length > 0 && (
+                    {paymentDates &&
+                        paymentDates.length > 0 && (
                         <div className="flex flex-col divide-y divide-primary/10">
                         {Array.from({
-                            length: formValues.payment_dates.length,
+                            length: paymentDates.length,
                         }).map((_, index) => (
                             <div
                                 key={index}
@@ -447,7 +426,7 @@ const Simulator = () => {
                             >
                                 <div
                                     className={`grid min-w-0 flex-1 gap-3 ${
-                                        formValues.type === "custom"
+                                        formType === "custom"
                                             ? "grid-cols-1 sm:grid-cols-2"
                                             : "grid-cols-1"
                                     }`}
@@ -459,7 +438,7 @@ const Simulator = () => {
                                         errors={errors}
                                     />
 
-                                    {formValues.type === "custom" && (
+                                    {formType === "custom" && (
                                         <InputCurrency
                                             control={control}
                                             label={`Valor parcela ${index + 1}`}
@@ -566,7 +545,7 @@ const Simulator = () => {
                     </div>
                 )}
 
-                {calculationResult && formValues.customer_id && (
+                {calculationResult && customerId && (
                     <Button
                         size="full"
                         type="submit"

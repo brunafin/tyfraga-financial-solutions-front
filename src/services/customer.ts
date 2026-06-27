@@ -9,13 +9,13 @@ export const CustomerService = {
         return response.data;
     },
 
-    async getCustomers(){
-        const response = await api.get("/customers");
+    async getCustomers(signal?: AbortSignal){
+        const response = await api.get("/customers", { signal });
         return response.data;
     },
 
-    async getCustomerById(id: string){
-        const response = await api.get(`/customers/${id}`);
+    async getCustomerById(id: string, signal?: AbortSignal){
+        const response = await api.get(`/customers/${id}`, { signal });
         return response.data;
     },
 

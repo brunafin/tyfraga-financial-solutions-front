@@ -23,8 +23,8 @@ export const LoanService = {
     //     return response.data;
     // },
 
-    async getLoanById(id: string){
-        const response = await api.get(`/loans/${id}`);
+    async getLoanById(id: string, signal?: AbortSignal){
+        const response = await api.get(`/loans/${id}`, { signal });
         return response.data;
     },
 

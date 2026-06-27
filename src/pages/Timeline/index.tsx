@@ -1,34 +1,18 @@
-import { useEffect, useState } from "react";
 import Section from "../../components/ui/Section";
 import TimelineList from "../../components/TimelineList";
-import type { ITimelineItem } from "../Dashboard";
-import { useLoader } from "../../contexts/Loader/useLoader";
-import { DashboardService } from "../../services/dashboard";
+import QueryError from "../../components/QueryError";
+import { useTimeline } from "../../hooks/queries";
 
 const Timeline = () => {
-  const { showLoader, hideLoader } = useLoader();
-  const [timeline, setTimeline] = useState<ITimelineItem[]>([]);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      showLoader();
-      try {
-        const [timelineData] = await Promise.all([
-          DashboardService.getTimeline({ limit: 0 }),
-        ]);
-        setTimeline(timelineData.timeline);
-      } catch (error) {
-        console.error("Erro ao buscar informações:", error);
-      }
-      hideLoader();
-    };
-
-    fetchData();
-  }, []);
+  const { data: timeline = [], isError } = useTimeline();
 
   return (
     <Section title="Histórico de operações" goBack>
-      <TimelineList items={timeline} />
+      {isError ? (
+        <QueryError message="Não foi possível carregar o histórico." />
+      ) : (
+        <TimelineList items={timeline} />
+      )}
     </Section>
   );
 };

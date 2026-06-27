@@ -1,6 +1,58 @@
 import { Controller } from "react-hook-form";
 import { useEffect, useState } from "react";
 
+type PercentageFieldProps = {
+  field: {
+    value: unknown;
+    onChange: (value: number | string) => void;
+  };
+  displayValue: string;
+  setDisplayValue: (value: string) => void;
+  disabled?: boolean;
+};
+
+const PercentageField = ({
+  field,
+  displayValue,
+  setDisplayValue,
+  disabled,
+}: PercentageFieldProps) => {
+  useEffect(() => {
+    if (field.value !== undefined && field.value !== null) {
+      setDisplayValue(String(field.value).replace(".", ","));
+    } else {
+      setDisplayValue("");
+    }
+  }, [field.value, setDisplayValue]);
+
+  return (
+    <input
+      type="text"
+      inputMode="decimal"
+      data-form-field
+      disabled={disabled}
+      value={displayValue}
+      onChange={(e) => {
+        let value = e.target.value;
+
+        value = value.replace(/[^0-9,]/g, "");
+
+        const parts = value.split(",");
+        if (parts.length > 2) {
+          value = parts[0] + "," + parts.slice(1).join("");
+        }
+
+        setDisplayValue(value);
+
+        const numeric = value.replace(",", ".");
+        field.onChange(numeric === "" ? "" : Number(numeric));
+      }}
+      placeholder="0,00"
+      className="input-field"
+    />
+  );
+};
+
 type InputPercentageProps = {
   label: string;
   name: string;
@@ -26,49 +78,14 @@ const InputPercentage = ({
         name={name}
         control={control}
         defaultValue={0}
-        render={({ field }) => {
-          // 🔥 sincroniza RHF -> UI
-          useEffect(() => {
-            if (field.value !== undefined && field.value !== null) {
-              setDisplayValue(
-                String(field.value).replace(".", ",")
-              );
-            } else {
-              setDisplayValue("");
-            }
-          }, [field.value]);
-
-          return (
-            <input
-              type="text"
-              inputMode="decimal"
-              data-form-field
-              disabled={disabled}
-              value={displayValue}
-              onChange={(e) => {
-                let value = e.target.value;
-
-                // só números e vírgula
-                value = value.replace(/[^0-9,]/g, "");
-
-                // evita mais de uma vírgula
-                const parts = value.split(",");
-                if (parts.length > 2) {
-                  value = parts[0] + "," + parts.slice(1).join("");
-                }
-
-                setDisplayValue(value);
-
-                const numeric = value.replace(",", ".");
-                field.onChange(
-                  numeric === "" ? "" : Number(numeric)
-                );
-              }}
-              placeholder="0,00"
-              className="input-field"
-            />
-          );
-        }}
+        render={({ field }) => (
+          <PercentageField
+            field={field}
+            displayValue={displayValue}
+            setDisplayValue={setDisplayValue}
+            disabled={disabled}
+          />
+        )}
       />
 
       {errors?.[name] && (

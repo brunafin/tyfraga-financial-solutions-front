@@ -1,30 +1,11 @@
-import { Outlet } from "react-router";
 import Section from "../../components/ui/Section";
-import { useEffect, useState } from "react";
-import { CustomerService } from "../../services/customer";
-import type { ICustomerListItem } from "./types";
-import { useLoader } from "../../contexts/Loader/useLoader";
 import ButtonLink from "../../components/ui/ButtonNavLink";
 import CustomerListItem from "./CustomerListItem";
+import QueryError from "../../components/QueryError";
+import { useCustomers } from "../../hooks/queries";
 
 const Customers = () => {
-  const [list, setList] = useState<ICustomerListItem[]>([]);
-  const { showLoader, hideLoader } = useLoader();
-
-  useEffect(() => {
-    const fetchCustomers = async () => {
-      showLoader();
-      try {
-        const { customers } = await CustomerService.getCustomers();
-        setList(customers);
-      } catch (error) {
-        console.error("Erro ao buscar clientes:", error);
-      }
-      hideLoader();
-    };
-
-    fetchCustomers();
-  }, []);
+  const { data: list = [], isError } = useCustomers();
 
   return (
     <Section title="Clientes">
@@ -32,7 +13,9 @@ const Customers = () => {
         <ButtonLink to="/customers/create">Novo cliente</ButtonLink>
       </div>
 
-      {list.length > 0 ? (
+      {isError ? (
+        <QueryError message="Não foi possível carregar os clientes." />
+      ) : list.length > 0 ? (
         <ul className="flex flex-col gap-3">
           {list.map((customer, index) => (
             <CustomerListItem
@@ -47,8 +30,6 @@ const Customers = () => {
       ) : (
         <p className="text-sm text-text/60 sm:text-base">Nenhum cliente encontrado</p>
       )}
-
-      <Outlet />
     </Section>
   );
 };

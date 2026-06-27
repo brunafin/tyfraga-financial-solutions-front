@@ -8,8 +8,6 @@ export const calculateByRate = (
 ) => {
   const installments = paymentDates.length;
 
-  console.log('tax', monthlyRate)
-
   const pmt = calculatePMTFromDates(
     principal,
     monthlyRate,

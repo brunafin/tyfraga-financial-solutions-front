@@ -4,10 +4,10 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import Section from "../../../components/ui/Section";
 import Button from "../../../components/ui/Button";
-import { CustomerService } from "../../../services/customer";
 import InputText from "../../../components/ui/Input/InputText";
 import InputPhone from "../../../components/ui/Input/InputPhone";
 import { handleFormEnterNavigation } from "../../../utils/handleFormEnterNavigation";
+import { useCreateCustomer } from "../../../hooks/queries";
 
 
 const schema = z.object({
@@ -22,6 +22,7 @@ type FormData = z.infer<typeof schema>;
 
 const CreateCustomer = () => {
   const navigate = useNavigate();
+  const createCustomer = useCreateCustomer();
   const {
     register,
     control,
@@ -33,7 +34,7 @@ const CreateCustomer = () => {
 
   const onSubmit = async (data: FormData) => {
     try {
-      await CustomerService.createCustomer({
+      await createCustomer.mutateAsync({
         name: data.name,
         phone: data.phone,
       });
@@ -52,7 +53,6 @@ const CreateCustomer = () => {
         className="flex flex-col md:w-3/4 gap-3"
       >
 
-        {/* Nome */}
         <div className="w-full md:w-1/2">
         <InputText
           label="Nome"
@@ -63,7 +63,6 @@ const CreateCustomer = () => {
         />
         </div>
 
-        {/* Telefone */}
         <div className="w-full md:w-1/2">
         <InputPhone
           label="Telefone"

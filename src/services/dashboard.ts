@@ -1,18 +1,20 @@
 import { api } from "./api";
 
 export const DashboardService = {
-    async getInfo() {
-        const response = await api.get("/dashboard");
+    async getInfo(signal?: AbortSignal) {
+        const response = await api.get("/dashboard", { signal });
         return response.data;
     },
 
-    async getTimeline({ limit }: { limit?: number }) {
-        const response = await api.get(`/timeline?limit=${limit}`);
+    async getTimeline({ limit }: { limit?: number }, signal?: AbortSignal) {
+        const params = limit !== undefined ? `?limit=${limit}` : "";
+        const response = await api.get(`/timeline${params}`, { signal });
         return response.data;
     },
 
-    async getNextPayments({ limit }: { limit?: number }) {
-        const response = await api.get(`/next-payments?limit=${limit}`);
+    async getNextPayments({ limit }: { limit?: number }, signal?: AbortSignal) {
+        const params = limit !== undefined ? `?limit=${limit}` : "";
+        const response = await api.get(`/next-payments${params}`, { signal });
         return response.data;
     }
 }

@@ -21,21 +21,36 @@ const InstallmentCard = ({
   onMarkAsPaid,
 }: InstallmentCardProps) => {
   const isPaid = !!payedDate;
+  const isOverdue =
+    !isPaid &&
+    (() => {
+      const due = new Date(dueDate);
+      const today = new Date();
+      due.setHours(0, 0, 0, 0);
+      today.setHours(0, 0, 0, 0);
+      return due < today;
+    })();
 
   return (
     <li className="rounded-xl bg-white p-4 shadow-sm">
       <div className="mb-4 flex items-start justify-between gap-3">
-        <div>
-          <p className="text-base font-bold text-primary sm:text-lg">Parcela {installmentRef}</p>
-          <span
-            className={`mt-2 inline-block rounded-full px-3 py-1 text-xs font-medium sm:text-sm ${
-              isPaid
-                ? "bg-green-100 text-green-800"
-                : "bg-tertiary/15 text-tertiary"
-            }`}
-          >
-            {isPaid ? "Pago" : "Não pago"}
-          </span>
+        <div className="flex min-w-0 flex-wrap items-center gap-2">
+          <p className="text-base font-bold text-primary sm:text-lg">
+            Parcela {installmentRef}
+          </p>
+          {isPaid ? (
+            <span className="inline-flex shrink-0 items-center rounded-full bg-green-100 px-3 py-0.5 text-xs font-medium text-green-800 sm:text-sm">
+              Pago
+            </span>
+          ) : isOverdue ? (
+            <span className="inline-flex shrink-0 items-center rounded-full bg-red-100 px-3 py-0.5 text-xs font-medium text-red-800 sm:text-sm">
+              Vencido
+            </span>
+          ) : (
+            <span className="inline-flex shrink-0 items-center rounded-full bg-primary/10 px-3 py-0.5 text-xs font-medium text-primary sm:text-sm">
+              Não pago
+            </span>
+          )}
         </div>
         <p className="shrink-0 text-base font-bold text-primary text-numeric sm:text-lg">
           {formatCentsToRealBRL(installmentValue)}
