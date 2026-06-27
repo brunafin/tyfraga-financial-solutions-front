@@ -1,15 +1,15 @@
-import Logo from "../../../assets/logo.svg"
+import { createPortal } from "react-dom";
+import LogoCoin from "../LogoCoin";
 
 const Loader = () => {
-    return (
-        <div className="fixed inset-0 flex items-center justify-center z-50 bg-primary/80">
-            <img
-                src={Logo}
-                alt="Carregando"
-                className="animate-spin size-14"
-            />
-        </div>
-    );
+  return createPortal(
+    <div className="fixed inset-0 z-[9999] flex min-h-dvh min-w-full items-center justify-center bg-primary">
+      <div className="rounded-full bg-white p-2.5">
+        <LogoCoin className="size-14 animate-spin" gradientId="loaderCoinGradient" />
+      </div>
+    </div>,
+    document.body,
+  );
 };
 
 export default Loader;

@@ -23,7 +23,7 @@ export default defineConfig({
         description: 'Aplicativo Turcoin',
 
         theme_color: '#3F1B4C',
-        background_color: '#ffffff',
+        background_color: '#3F1B4C',
 
         display: 'standalone',
         orientation: 'portrait',

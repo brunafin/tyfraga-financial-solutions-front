@@ -13,15 +13,41 @@
 
     <!-- iOS PWA Tags -->
     <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="white" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <meta name="apple-mobile-web-app-title" content="Turcoin" />
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
     <link rel="apple-touch-icon" sizes="167x167" href="/apple-touch-icon.png" />
     <link rel="apple-touch-icon" sizes="152x152" href="/apple-touch-icon.png" />
     <link rel="mask-icon" href="/pwa-512x512-maskable.png" color="#3F1B4C" />
+    <style>
+      #initial-loader {
+        position: fixed;
+        inset: 0;
+        z-index: 99999;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: #3f1b4c;
+      }
+
+      #initial-loader img {
+        width: 5rem;
+        height: 5rem;
+        animation: initial-loader-spin 1s linear infinite;
+      }
+
+      @keyframes initial-loader-spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+    </style>
   </head>
   <body>
     <div id="root"></div>
+    <div id="initial-loader" aria-hidden="true">
+      <img src="/logo.png" alt="" width="80" height="80" />
+    </div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
