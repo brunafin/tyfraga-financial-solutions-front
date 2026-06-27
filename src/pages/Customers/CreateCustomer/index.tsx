@@ -8,6 +8,7 @@ import InputText from "../../../components/ui/Input/InputText";
 import InputPhone from "../../../components/ui/Input/InputPhone";
 import { handleFormEnterNavigation } from "../../../utils/handleFormEnterNavigation";
 import { useCreateCustomer } from "../../../hooks/queries";
+import { useModal } from "../../../contexts/Modal/useModal";
 
 
 const schema = z.object({
@@ -23,6 +24,7 @@ type FormData = z.infer<typeof schema>;
 const CreateCustomer = () => {
   const navigate = useNavigate();
   const createCustomer = useCreateCustomer();
+  const { showAlert } = useModal();
   const {
     register,
     control,
@@ -41,7 +43,7 @@ const CreateCustomer = () => {
       navigate("/customers");
     } catch (error) {
       console.error('Erro ao criar cliente:', error);
-      alert("Ocorreu um erro ao criar o cliente.");
+      await showAlert("Ocorreu um erro ao criar o cliente.");
     }
   };
 

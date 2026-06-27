@@ -23,6 +23,7 @@ import { useNavigate } from "react-router";
 import { handleFormEnterNavigation } from "../../utils/handleFormEnterNavigation";
 import QueryError from "../../components/QueryError";
 import { useCreateLoan, useCustomers } from "../../hooks/queries";
+import { useModal } from "../../contexts/Modal/useModal";
 
 const schema = z.object({
     customer_id: z.string(),
@@ -51,6 +52,7 @@ type CalculationResult = {
 const Simulator = () => {
     const navigate = useNavigate();
     const createLoan = useCreateLoan();
+    const { showAlert } = useModal();
     const { data: customers = [], isError } = useCustomers();
 
     const resultRef = useRef<HTMLDivElement | null>(null);
@@ -94,11 +96,13 @@ const Simulator = () => {
 
     const onSubmit = async (data: FormData) => {
         if (!data.value) {
-            return alert("Preencha o valor do empréstimo");
+            await showAlert("Preencha o valor do empréstimo");
+            return;
         }
 
         if (!calculationResult) {
-            return alert("Simule o empréstimo antes de emprestar");
+            await showAlert("Simule o empréstimo antes de emprestar");
+            return;
         }
 
         const installmentPaymentValues = paymentValues || [];
@@ -134,13 +138,13 @@ const Simulator = () => {
         } catch (error) {
             console.error("Erro ao criar empréstimo:", error);
 
-            alert(
+            await showAlert(
                 "Ocorreu um erro ao criar o empréstimo. Por favor, tente novamente."
             );
         }
     };
 
-    const handleCalculationLoan = () => {
+    const handleCalculationLoan = async () => {
         const values = getValues();
 
         const parsedPaymentDates: Date[] =
@@ -152,7 +156,7 @@ const Simulator = () => {
             paymentDates?.length !== parsedPaymentDates.length ||
             parsedPaymentDates.length === 0
         ) {
-            alert("Preencha todas as datas das parcelas");
+            await showAlert("Preencha todas as datas das parcelas");
             return;
         }
 
@@ -160,7 +164,7 @@ const Simulator = () => {
         const principal = (values.value || 0) / 100;
 
         if (!principal) {
-            alert("Preencha o valor do empréstimo");
+            await showAlert("Preencha o valor do empréstimo");
             return;
         }
 
@@ -194,7 +198,7 @@ const Simulator = () => {
                 setTableData(tableDataResult);
             } else if (formType === "installment") {
                 if (!installmentValue) {
-                    alert("Preencha o valor da parcela");
+                    await showAlert("Preencha o valor da parcela");
                     return;
                 }
 
@@ -225,7 +229,7 @@ const Simulator = () => {
                 const customPaymentValues = paymentValues || [];
 
                 if (customPaymentValues.length !== parsedPaymentDates.length) {
-                    alert("Preencha o valor de todas as parcelas");
+                    await showAlert("Preencha o valor de todas as parcelas");
                     return;
                 }
 
@@ -270,7 +274,7 @@ const Simulator = () => {
                     ? error.message
                     : "Não foi possível calcular a simulação";
 
-            alert(message);
+            await showAlert(message);
             return;
         }
 

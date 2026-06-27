@@ -1,6 +1,7 @@
 import { useParams } from "react-router";
 import Section from "../../components/ui/Section";
 import { useLoader } from "../../contexts/Loader/useLoader";
+import { useModal } from "../../contexts/Modal/useModal";
 import Button from "../../components/ui/Button";
 import LoanSummaryCard from "./LoanSummaryCard";
 import InstallmentCard from "./InstallmentCard";
@@ -14,6 +15,7 @@ import {
 const LoanDetails = () => {
   const { id } = useParams();
   const { showLoader, hideLoader } = useLoader();
+  const { showAlert, showConfirm } = useModal();
   const { data: loan, isError } = useLoan(id!);
   const payInstallment = usePayInstallment(id!);
   const deleteLoan = useDeleteLoan();
@@ -22,11 +24,11 @@ const LoanDetails = () => {
     showLoader();
     try {
       await deleteLoan.mutateAsync(loanId);
-      alert("Empréstimo excluído com sucesso!");
+      await showAlert("Empréstimo excluído com sucesso!");
       window.history.back();
     } catch (error) {
       console.error("Erro ao excluir empréstimo:", error);
-      alert("Ocorreu um erro ao excluir o empréstimo. Tente novamente.");
+      await showAlert("Ocorreu um erro ao excluir o empréstimo. Tente novamente.");
     } finally {
       hideLoader();
     }
@@ -38,7 +40,7 @@ const LoanDetails = () => {
       await payInstallment.mutateAsync(installmentId);
     } catch (error) {
       console.error(error);
-      alert("Não foi possível registrar o pagamento.");
+      await showAlert("Não foi possível registrar o pagamento.");
     } finally {
       hideLoader();
     }
@@ -106,10 +108,11 @@ const LoanDetails = () => {
 
         <Button
           variant="destructive"
-          onClick={() => {
-            if (
-              window.confirm("Tem certeza que deseja excluir este empréstimo?")
-            ) {
+          onClick={async () => {
+            const confirmed = await showConfirm(
+              "Tem certeza que deseja excluir este empréstimo?",
+            );
+            if (confirmed) {
               handleDeleteLoan(id!);
             }
           }}

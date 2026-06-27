@@ -15,6 +15,7 @@ import DetailMetricCard from "./DetailMetricCard";
 import LoanListItem from "./LoanListItem";
 import QueryError from "../../../components/QueryError";
 import { useCustomer, useUpdateCustomer } from "../../../hooks/queries";
+import { useModal } from "../../../contexts/Modal/useModal";
 
 const schema = z.object({
   name: z.string().min(1, "O nome é obrigatório"),
@@ -33,6 +34,7 @@ const Details = () => {
   const { id } = useParams();
   const { data: customer, isError, refetch } = useCustomer(id!);
   const updateCustomer = useUpdateCustomer(id!);
+  const { showAlert } = useModal();
   const [isEdit, setIsEdit] = useState(false);
   const {
     register,
@@ -63,7 +65,7 @@ const Details = () => {
       setIsEdit(false);
     } catch (error) {
       console.error("Erro ao atualizar cliente:", error);
-      alert("Ocorreu um erro ao atualizar o cliente.");
+      await showAlert("Ocorreu um erro ao atualizar o cliente.");
     }
   };
 

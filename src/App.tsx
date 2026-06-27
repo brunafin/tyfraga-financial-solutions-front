@@ -8,6 +8,7 @@ import Details from "./pages/Customers/Details"
 import NotDevelopment from "./pages/NotDevelopment"
 import Simulator from "./pages/Simulator"
 import { LoaderProvider } from "./contexts/Loader/LoaderProvider"
+import { ModalProvider } from "./contexts/Modal/ModalProvider"
 import { AuthProvider } from "./contexts/Auth/AuthProvider"
 import UiComponents from "./pages/Config/UiComponents"
 import Config from "./pages/Config"
@@ -33,7 +34,8 @@ function AppLayout() {
 function App() {
   return (
     <AuthProvider>
-      <LoaderProvider>
+      <ModalProvider>
+        <LoaderProvider>
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route element={<ProtectedRoute />}>
@@ -53,7 +55,8 @@ function App() {
             </Route>
           </Route>
         </Routes>
-      </LoaderProvider>
+        </LoaderProvider>
+      </ModalProvider>
     </AuthProvider>
   )
 }
