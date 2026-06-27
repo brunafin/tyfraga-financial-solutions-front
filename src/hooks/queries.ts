@@ -72,13 +72,13 @@ export function useQueryWithLoader<TData>(
   const query = useQuery(options);
 
   useEffect(() => {
-    if (!query.isFetching) {
+    if (!query.isLoading) {
       return;
     }
 
     showLoader();
     return () => hideLoader();
-  }, [query.isFetching, showLoader, hideLoader]);
+  }, [query.isLoading, showLoader, hideLoader]);
 
   return query;
 }

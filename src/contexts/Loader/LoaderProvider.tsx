@@ -1,10 +1,24 @@
-import { useCallback, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { LoaderContext } from "./LoaderContext";
 import Loader from "../../components/ui/Loader";
+
+function removeInitialLoader() {
+  document.getElementById("initial-loader")?.remove();
+}
 
 export function LoaderProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(false);
   const countRef = useRef(0);
+
+  useEffect(() => {
+    requestAnimationFrame(removeInitialLoader);
+  }, []);
+
+  useEffect(() => {
+    if (loading) {
+      removeInitialLoader();
+    }
+  }, [loading]);
 
   const showLoader = useCallback(() => {
     countRef.current += 1;
